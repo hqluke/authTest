@@ -5,9 +5,22 @@
   <title>Log In</title>
 </head>
 <body>
-  <% if (locals.user) {%>
-    <h1>WELCOME BACK <%= user.name %> on the / page</h1>
+  <% if (locals.currentUser) {%>
+    <h1>WELCOME BACK <%= currentUser.name %> we on da home page</h1>
     <a href="/log-out">LOG OUT</a>
+        <h1>Exercises</h1>
+        <ul>
+            <% exerciseList.forEach(exercise => { %>
+                <li><%= exercise.name %></li>
+            <% }) %>
+        </ul>
+        <h1>Weights</h1>
+        <ul>
+            <% weightList.forEach(weight => { %>
+                <li><%= weight.weight %></li>
+            <% }) %>
+        </ul>
+
   <% } else { %>
     <h1>please log in</h1>
     <form action="/log-in" method="POST">
@@ -20,4 +33,5 @@
   <%}%>
 </body>
 </html>
+
 

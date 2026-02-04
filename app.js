@@ -28,6 +28,13 @@ app.use(
 app.use(passport.session());
 app.use(express.urlencoded({ extended: false }));
 
+//can access req.currentUser everywhere
+// has to be after passport.session() is defined
+app.use((req, res, next) => {
+    res.locals.currentUser = req.user;
+    next();
+});
+
 app.get("/", (req, res) => {
     res.render("index", { user: req.user });
 });
@@ -47,19 +54,16 @@ app.post("/sign-up", async (req, res, next) => {
     }
 });
 
+const exerciseRouter = require("./routes/exerciseRouter");
+app.use("/exercise", exerciseRouter);
+
 app.post(
     "/log-in",
     passport.authenticate("local", {
-        successRedirect: "/",
+        successRedirect: "/exercise",
         failureRedirect: "/",
     }),
 );
-
-//can access req.currentUser everywhere
-app.use((req, res, next) => {
-    res.locals.currentUser = req.user;
-    next();
-});
 
 app.get("/log-out", (req, res, next) => {
     req.logout((err) => {
@@ -73,7 +77,7 @@ app.get("/log-out", (req, res, next) => {
 passport.use(
     new LocalStrategy(async (username, password, done) => {
         try {
-            console.log("Attempting login for:", username); // Add this
+            console.log("Attempting login for:", username);
             const { rows } = await pool.query(
                 "SELECT * FROM users WHERE name = $1",
                 [username],
@@ -81,22 +85,22 @@ passport.use(
             const user = rows[0];
 
             if (!user) {
-                console.log("User not found"); // Add this
+                console.log("User not found");
                 return done(null, false, { message: "Incorrect username" });
             }
 
             const match = await bcrypt.compare(password, user.password);
-            console.log("Password match:", match); // Add this
+            console.log("Password match:", match);
 
             if (!match) {
                 return done(null, false, { message: "Incorrect password" });
             }
 
-            console.log("Login successful for user:", user.id); // Add this
+            console.log("Login successful for user:", user.id);
             console.log(user);
             return done(null, user);
         } catch (err) {
-            console.error("Login error:", err); // Add this
+            console.error("Login error:", err);
             return done(err);
         }
     }),
