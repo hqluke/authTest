@@ -1,0 +1,31 @@
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Insert Data</title>
+    </head>
+    <body>
+        <h1><%= exercise.name %></h1>
+        <form action="/exercise/insertData" method="POST">
+            <input type="hidden" name="exerciseId" value="<%= exercise.id %>" />
+            <label for="weight">Weight</label>
+            <select name="weight" id="select-<%weights.id%>">
+                <%weights.forEach(weight => {%>
+                <option value=<%=weight.weight%>><%=weight.weight%></option>
+                <%})%>
+            </select>
+            <label for="sets">Sets</label>
+        <select name="sets" id="select-<%sets.id%>">
+            <%sets.forEach(set => {%>
+            <option value=<%=set.sets%>><%=set.sets%></option>
+            <%})%>
+        </select>
+            <label for="reps">Reps</label>
+        <select name="reps" id="select-<%reps.id%>">
+            <%reps.forEach(rep => {%>
+            <option value=<%=rep.reps%>><%=rep.reps%></option>
+            <%})%>
+        </select>
+            <button type="submit">Insert Data</button>
+        </form>
+    </body>
+</html>

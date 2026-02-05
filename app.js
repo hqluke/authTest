@@ -15,16 +15,21 @@ app.set("view engine", "ejs");
 
 app.use(
     session({
+        // Stores the session in the db in the table user_sessions.
+        // pool defines the db connection.
         store: new pgSession({
             pool: pool,
             tableName: "user_sessions",
         }),
+        // The secret is used to sign the cookie.
+        // Its a long random string that is stored in the .env file.
         secret: process.env.COOKIE_SECRET,
         resave: false,
         saveUninitialized: false,
         cookie: { maxAge: 30 * 24 * 60 * 60 * 1000 }, // 30 days
     }),
 );
+// Uses the above defined session so passport can access it in the operations below.
 app.use(passport.session());
 app.use(express.urlencoded({ extended: false }));
 
@@ -36,12 +41,13 @@ app.use((req, res, next) => {
 });
 
 app.get("/", (req, res) => {
-    res.render("index", { user: req.user });
+    res.render("index");
 });
 app.get("/sign-up", (req, res) => res.render("sign-up-form"));
 
 app.post("/sign-up", async (req, res, next) => {
     try {
+        // Hashes the password before inserting it into the db
         const hashedPassword = await bcrypt.hash(req.body.password, 10);
         await pool.query("INSERT INTO users (name, password) VALUES ($1, $2)", [
             req.body.username,
@@ -59,6 +65,7 @@ app.use("/exercise", exerciseRouter);
 
 app.post(
     "/log-in",
+    // Calls passport.use to authenticate the user
     passport.authenticate("local", {
         successRedirect: "/exercise",
         failureRedirect: "/",
@@ -74,6 +81,8 @@ app.get("/log-out", (req, res, next) => {
     });
 });
 
+// Looks if the user exists in the db and if so, compares the password.
+// If the password matches, the user is logged in and the user is returned as req.user
 passport.use(
     new LocalStrategy(async (username, password, done) => {
         try {
@@ -106,10 +115,13 @@ passport.use(
     }),
 );
 
+// Stores the user id as a session in the db and in the cookie.
+// So when the user logs in, the userID is sent to the server and the server looks up the user in the db.
 passport.serializeUser((user, done) => {
     done(null, user.id);
 });
 
+// Reads the session cookie and looks up the userID in the db. If found, returns the user as req.user
 passport.deserializeUser(async (id, done) => {
     try {
         const { rows } = await pool.query("SELECT * FROM users WHERE id = $1", [
