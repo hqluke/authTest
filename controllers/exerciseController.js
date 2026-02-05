@@ -48,15 +48,24 @@ const getInsertDataPage = async (req, res) => {
 };
 
 const postInsertData = async (req, res) => {
-    const { exerciseId, weight, reps, sets } = req.body; // Get the form data
-    const userId = req.user.id; // Get the user ID from the passport session
+    const { exerciseId, weight, totalSets, isUpperBody } = req.body;
+    const userId = req.user.id;
+
+    const repsArray = Object.keys(req.body)
+        .filter((key) => key.startsWith("reps-"))
+        .sort()
+        .map((key) => parseInt(req.body[key]));
 
     console.log("--------Inserting Data:----------");
-    console.log(userId, exerciseId, weight, reps, sets);
+    console.log(userId, exerciseId, weight, repsArray, totalSets);
 
     try {
-        await db.insertData(userId, exerciseId, weight, reps, sets);
-        res.redirect("/exercise");
+        for (let i = 0; i < totalSets; i++) {
+            await db.insertData(userId, exerciseId, weight, repsArray[i], 1);
+        }
+        const redirectPath =
+            isUpperBody === "true" ? "/exercise/upper" : "/exercise/lower";
+        res.redirect(redirectPath);
     } catch (error) {
         console.error("Error inserting data:", error);
         return res

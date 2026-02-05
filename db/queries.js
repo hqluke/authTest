@@ -10,6 +10,14 @@ const getWeights = async () => {
     return weightList.rows;
 };
 
+const getWeightIdFromWeight = async (weight) => {
+    const weightId = await pool.query(
+        "SELECT id FROM weights WHERE weight = $1",
+        [weight],
+    );
+    return weightId.rows[0];
+};
+
 const getUperBodyExercises = async () => {
     const upperBodyExercises = await pool.query(
         "SELECT * FROM exercise WHERE isupperbody = true",
@@ -35,12 +43,14 @@ const getSets = async () => {
     return sets.rows;
 };
 
-const insertData = async (userId, exerciseId, weightId, reps, sets) => {
+const insertData = async (userId, exerciseId, weight, reps, sets) => {
     const date = new Date().toISOString().split("T")[0]; // Get today's date (YYYY-MM-DD)
+
+    const weightId = await getWeightIdFromWeight(weight);
 
     const result = await pool.query(
         "INSERT INTO complete (user_id, date, exercise_id, weight_id, reps, sets) VALUES ($1, $2, $3, $4, $5, $6)",
-        [userId, date, exerciseId, weightId, reps, sets],
+        [userId, date, exerciseId, weightId.id, reps, sets],
     );
     return result.rows;
 };
