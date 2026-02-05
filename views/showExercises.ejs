@@ -1,0 +1,24 @@
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title><%= exerciseType %> Exercises</title>
+    </head>
+    <body>
+        <% if (exercises.length === 0) { %>
+        <h1>No <%= exerciseType %> exercises found</h1>
+        <% } else{ %>
+        <h1><%= exerciseType %> Exercises</h1>
+        <%exercises.forEach(exercise => {%>
+        <div id="<%= exercise.id %>">
+            <form action="/exercise/insertData" method="GET">
+                <input
+                    type="hidden"
+                    name="exerciseId"
+                    value="<%= exercise.id %>"
+                />
+                <button type="submit"><%= exercise.name %></button>
+            </form>
+        </div>
+        <%})%> <%}%>
+    </body>
+</html>

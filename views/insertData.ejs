@@ -12,12 +12,6 @@
                 name="isUpperBody"
                 value="<%= exercise.isupperbody %>"
             />
-            <label for="select-weight">Weight</label>
-            <select name="weight" id="select-weight">
-                <%weights.forEach(weight => {%>
-                <option value="<%=weight.weight%>"><%=weight.weight%></option>
-                <%})%>
-            </select>
             <div class="isets">
                 <input
                     type="hidden"
@@ -32,56 +26,110 @@
                     <%})%>
                 </select>
             </div>
-            <div class="ireps">
-                <label for="select-reps">Reps</label>
-                <select name="reps" id="select-reps">
-                    <%reps.forEach(rep => {%>
-                    <option value="<%=rep.reps%>"><%=rep.reps%></option>
-                    <%})%>
-                </select>
+            <div class="iweightsandreps">
+                <div class="iweight">
+                    <label for="select-weight">Weight</label>
+                    <select name="weight" id="select-weight">
+                        <%weights.forEach(weight => {%>
+                        <option value="<%=weight.weight%>">
+                            <%=weight.weight%>
+                        </option>
+                        <%})%>
+                    </select>
+                </div>
+                <div class="ireps">
+                    <label for="select-reps">Reps</label>
+                    <select name="reps" id="select-reps">
+                        <%reps.forEach(rep => {%>
+                        <option value="<%=rep.reps%>"><%=rep.reps%></option>
+                        <%})%>
+                    </select>
+                </div>
             </div>
             <button type="submit">Insert Data</button>
         </form>
+
+        <script>
+
+            //converts the reps data to json so it can be used in the js
+                const repsData = <%- JSON.stringify(reps) %>;
+                // console.log(repsData);
+
+                const weightData = <%- JSON.stringify(weights) %>;
+                // console.log(weightData);
+
+
+            document.getElementById("select-sets").addEventListener("change", () => {
+                displayNumSets();
+                displayNumWeight();
+            });
+
+            const repDiv = document.querySelector(".ireps");
+            const hiddenSets = document.getElementById("totalSets");
+            const weightDiv = document.querySelector(".iweight");
+
+            function displayNumWeight(){
+                while(weightDiv.firstChild){
+                    weightDiv.removeChild(weightDiv.lastChild);
+                }
+
+                let select = document.getElementById("select-sets");
+                selectedSets = select.value;
+
+                for (let i = 1; i <= selectedSets; i++) {
+                    const weightLabel = document.createElement("label");
+                    weightLabel.setAttribute("for", "select-weight-" + i);
+                    weightLabel.innerText = "Weight " + i;
+                    weightDiv.appendChild(weightLabel);
+
+                    const weightSelect = document.createElement("select");
+                    weightSelect.setAttribute("name", "weight-" + i);
+                    weightSelect.setAttribute("id", "select-weight-" + i);
+
+                        weightData.forEach(weight => {
+                            const option = document.createElement("option");
+                            option.setAttribute("value", weight.weight);
+                            option.innerText = weight.weight;
+                            weightSelect.appendChild(option);
+                        });
+
+                    weightDiv.appendChild(weightSelect);
+                }
+
+
+            }
+
+            function displayNumSets(){
+                while(repDiv.firstChild){
+                repDiv.removeChild(repDiv.lastChild);
+                }
+
+
+                let select = document.getElementById("select-sets");
+                selectedSets = select.value;
+
+                hiddenSets.value = selectedSets;
+
+                for (let i = 1; i <= selectedSets; i++) {
+                    const repsLabel = document.createElement("label");
+                    repsLabel.setAttribute("for", "select-reps-" + i);
+                    repsLabel.innerText = "Reps " + i;
+                    repDiv.appendChild(repsLabel);
+
+                    const repsSelect = document.createElement("select");
+                    repsSelect.setAttribute("name", "reps-" + i);
+                    repsSelect.setAttribute("id", "select-reps-" + i);
+
+                        repsData.forEach(rep => {
+                            const option = document.createElement("option");
+                            option.setAttribute("value", rep.reps);
+                            option.innerText = rep.reps;
+                            repsSelect.appendChild(option);
+                        });
+
+                    repDiv.appendChild(repsSelect);
+                }
+            }
+        </script>
     </body>
 </html>
-
-<script>
-
-    //converts the reps data to json so it can be used in the js
-        const repsData = <%- JSON.stringify(reps) %>;
-        console.log(repsData);
-
-
-    document.getElementById("select-sets").addEventListener("change", displayNumSets);
-
-    const repDiv = document.querySelector(".ireps");
-    const hiddenSets = document.getElementById("totalSets");
-
-    function displayNumSets(){
-        while(repDiv.firstChild){
-        repDiv.removeChild(repDiv.lastChild);
-        }
-
-        const select = document.getElementById("select-sets");
-        selectedSets = select.value;
-
-        hiddenSets.value = selectedSets;
-
-        for (let i = 1; i <= selectedSets; i++) {
-            const repsLabel = document.createElement("label");
-            repsLabel.setAttribute("for", "select-reps-" + i);
-            repsLabel.innerText = "Reps " + i;
-            repDiv.appendChild(repsLabel);
-            const repsSelect = document.createElement("select");
-            repsSelect.setAttribute("name", "reps-" + i);
-            repsSelect.setAttribute("id", "select-reps-" + i);
-                repsData.forEach(rep => {
-                    const option = document.createElement("option");
-                    option.setAttribute("value", rep.reps);
-                    option.innerText = rep.reps;
-                    repsSelect.appendChild(option);
-                });
-            repDiv.appendChild(repsSelect);
-        }
-    }
-</script>

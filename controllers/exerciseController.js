@@ -17,7 +17,21 @@ const getUpper = async (req, res) => {
     const upperBodyExercises = await db.getUperBodyExercises();
     console.log("--------Upper body exercises found:----------");
     console.log(upperBodyExercises);
-    res.render("upperBody", { upperBodyExercises });
+    res.render("showExercises", {
+        exercises: upperBodyExercises,
+        exerciseType: "Upper Body",
+    });
+};
+
+const getLower = async (req, res) => {
+    console.log("--------------Calling For Lower body exercises--------------");
+    const lowerBodyExercises = await db.getLowerBodyExercises();
+    console.log("--------Lower body exercises found:----------");
+    console.log(lowerBodyExercises);
+    res.render("showExercises", {
+        exercises: lowerBodyExercises,
+        exerciseType: "Lower Body",
+    });
 };
 
 const getInsertDataPage = async (req, res) => {
@@ -48,7 +62,7 @@ const getInsertDataPage = async (req, res) => {
 };
 
 const postInsertData = async (req, res) => {
-    const { exerciseId, weight, totalSets, isUpperBody } = req.body;
+    const { exerciseId, totalSets, isUpperBody } = req.body;
     const userId = req.user.id;
 
     const repsArray = Object.keys(req.body)
@@ -56,12 +70,26 @@ const postInsertData = async (req, res) => {
         .sort()
         .map((key) => parseInt(req.body[key]));
 
+    const weightArray = Object.keys(req.body)
+        .filter((key) => key.startsWith("weight-"))
+        .sort()
+        .map((key) => parseInt(req.body[key]));
+
     console.log("--------Inserting Data:----------");
-    console.log(userId, exerciseId, weight, repsArray, totalSets);
+    console.log(userId, exerciseId, weightArray, repsArray, totalSets);
 
     try {
         for (let i = 0; i < totalSets; i++) {
-            await db.insertData(userId, exerciseId, weight, repsArray[i], 1);
+            let weightId = await db.getWeightIdFromWeight(weightArray[i]);
+            console.log(weightId);
+
+            await db.insertData(
+                userId,
+                exerciseId,
+                weightId.id,
+                repsArray[i],
+                1,
+            );
         }
         const redirectPath =
             isUpperBody === "true" ? "/exercise/upper" : "/exercise/lower";
@@ -79,4 +107,5 @@ module.exports = {
     getUpper,
     getInsertDataPage,
     postInsertData,
+    getLower,
 };
