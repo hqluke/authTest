@@ -35,8 +35,6 @@ const getLower = async (req, res) => {
 };
 
 const getInsertDataPage = async (req, res) => {
-    //TODO: get the previous sets/reps from the database for the exercise based off user
-
     // directs the user to the insert data page based on the exercise id
     const exerciseId = req.query.exerciseId;
 
@@ -56,13 +54,15 @@ const getInsertDataPage = async (req, res) => {
 
     const sets = await db.getSets();
 
-    // TODO: get the previous sets/reps from the database for this user + exercise
+    const userId = req.user.id;
 
-    res.render("insertData", { exercise, weights, reps, sets });
+    const lastData = await db.getLastDataFromExerciseID(exerciseId, userId);
+
+    res.render("insertData", { exercise, weights, reps, sets, lastData });
 };
 
 const postInsertData = async (req, res) => {
-    const { exerciseId, totalSets, isUpperBody } = req.body;
+    const { exerciseId, sets, isUpperBody } = req.body;
     const userId = req.user.id;
 
     const repsArray = Object.keys(req.body)
@@ -76,10 +76,10 @@ const postInsertData = async (req, res) => {
         .map((key) => parseInt(req.body[key]));
 
     console.log("--------Inserting Data:----------");
-    console.log(userId, exerciseId, weightArray, repsArray, totalSets);
+    console.log(userId, exerciseId, weightArray, repsArray, sets);
 
     try {
-        for (let i = 0; i < totalSets; i++) {
+        for (let i = 0; i < sets; i++) {
             let weightId = await db.getWeightIdFromWeight(weightArray[i]);
             console.log(weightId);
 
@@ -88,7 +88,7 @@ const postInsertData = async (req, res) => {
                 exerciseId,
                 weightId.id,
                 repsArray[i],
-                1,
+                sets,
             );
         }
         const redirectPath =

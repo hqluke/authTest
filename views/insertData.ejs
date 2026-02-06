@@ -13,12 +13,6 @@
                 value="<%= exercise.isupperbody %>"
             />
             <div class="isets">
-                <input
-                    type="hidden"
-                    name="totalSets"
-                    id="totalSets"
-                    value="0"
-                />
                 <label for="select-sets">Sets</label>
                 <select name="sets" id="select-sets">
                     <%sets.forEach(set => {%>
@@ -58,6 +52,11 @@
                 const weightData = <%- JSON.stringify(weights) %>;
                 // console.log(weightData);
 
+            const lastData = <%- JSON.stringify(lastData) %>;
+            console.log(lastData);
+
+
+            let select = document.getElementById("select-sets");
 
             document.getElementById("select-sets").addEventListener("change", () => {
                 displayNumSets();
@@ -65,10 +64,19 @@
             });
 
             const repDiv = document.querySelector(".ireps");
-            const hiddenSets = document.getElementById("totalSets");
             const weightDiv = document.querySelector(".iweight");
 
+            window.addEventListener("load", () => {
+
+                if (lastData.sets) {
+                    select.value = lastData.sets;
+                    displayNumSets();
+                    displayNumWeight();
+                }
+            });
+
             function displayNumWeight(){
+                console.log("calling num weight");
                 while(weightDiv.firstChild){
                     weightDiv.removeChild(weightDiv.lastChild);
                 }
@@ -76,15 +84,16 @@
                 let select = document.getElementById("select-sets");
                 selectedSets = select.value;
 
-                for (let i = 1; i <= selectedSets; i++) {
+                for (let i = 0; i <= selectedSets-1; i++) {
+                    let num = i + 1;
                     const weightLabel = document.createElement("label");
-                    weightLabel.setAttribute("for", "select-weight-" + i);
-                    weightLabel.innerText = "Weight " + i;
+                    weightLabel.setAttribute("for", "select-weight-" + num);
+                    weightLabel.innerText = "Weight " + num;
                     weightDiv.appendChild(weightLabel);
 
                     const weightSelect = document.createElement("select");
-                    weightSelect.setAttribute("name", "weight-" + i);
-                    weightSelect.setAttribute("id", "select-weight-" + i);
+                    weightSelect.setAttribute("name", "weight-" + num);
+                    weightSelect.setAttribute("id", "select-weight-" + num);
 
                         weightData.forEach(weight => {
                             const option = document.createElement("option");
@@ -93,32 +102,38 @@
                             weightSelect.appendChild(option);
                         });
 
+                    if (lastData.weight) {
+                        weightSelect.value = lastData.weight;
+                    }
+                    else{
+                        weightSelect.value = weightData[0].weight;
+                    }
                     weightDiv.appendChild(weightSelect);
                 }
 
 
             }
 
-            function displayNumSets(){
+            function displayNumSets(num){
+                console.log("calling num sets");
                 while(repDiv.firstChild){
                 repDiv.removeChild(repDiv.lastChild);
                 }
 
 
                 let select = document.getElementById("select-sets");
-                selectedSets = select.value;
+                let selectedSets = select.value;
 
-                hiddenSets.value = selectedSets;
-
-                for (let i = 1; i <= selectedSets; i++) {
+                for (let i = 0; i <= selectedSets-1; i++) {
+                    let num = i + 1;
                     const repsLabel = document.createElement("label");
-                    repsLabel.setAttribute("for", "select-reps-" + i);
-                    repsLabel.innerText = "Reps " + i;
+                    repsLabel.setAttribute("for", "select-reps-" + num);
+                    repsLabel.innerText = "Reps " + num;
                     repDiv.appendChild(repsLabel);
 
                     const repsSelect = document.createElement("select");
-                    repsSelect.setAttribute("name", "reps-" + i);
-                    repsSelect.setAttribute("id", "select-reps-" + i);
+                    repsSelect.setAttribute("name", "reps-" + num);
+                    repsSelect.setAttribute("id", "select-reps-" + num);
 
                         repsData.forEach(rep => {
                             const option = document.createElement("option");
@@ -127,6 +142,12 @@
                             repsSelect.appendChild(option);
                         });
 
+                    if (lastData.reps) {
+                        repsSelect.value = lastData.reps;
+                    }
+                    else{
+                        repsSelect.value = repsData[0].reps;
+                    }
                     repDiv.appendChild(repsSelect);
                 }
             }

@@ -60,6 +60,26 @@ const insertData = async (userId, exerciseId, weight, reps, sets) => {
     return result.rows;
 };
 
+const getLastDataFromExerciseID = async (exerciseId, userId) => {
+    const lastData = await pool.query(
+        "SELECT * FROM complete WHERE exercise_id = $1 and user_id = $2 ORDER BY date DESC LIMIT 10",
+        [exerciseId, userId],
+    );
+
+    if (lastData.rows.length === 0) {
+        return [];
+    }
+
+    const newestDate = lastData.rows[0].date;
+
+    const latestData = await pool.query(
+        `SELECT c.reps, w.weight, c.weight_id, c.sets from complete c join weights w on c.weight_id = w.id where c.exercise_id = $1 and c.user_id = $2 and c.date = $3 order by c.weight_id desc, c.reps desc`,
+        [exerciseId, userId, newestDate],
+    );
+
+    return latestData.rows[0];
+};
+
 module.exports = {
     getExercises,
     getWeights,
@@ -70,4 +90,5 @@ module.exports = {
     insertData,
     getLowerBodyExercises,
     getWeightIdFromWeight,
+    getLastDataFromExerciseID,
 };
