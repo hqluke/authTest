@@ -68,8 +68,8 @@
 
             window.addEventListener("load", () => {
 
-                if (lastData.sets) {
-                    select.value = lastData.sets;
+                if (lastData[0].sets) {
+                    select.value = lastData[0].sets;
                     displayNumSets();
                     displayNumWeight();
                 }
@@ -102,8 +102,8 @@
                             weightSelect.appendChild(option);
                         });
 
-                    if (lastData.weight) {
-                        weightSelect.value = lastData.weight;
+                    if (lastData[i].weight) {
+                        weightSelect.value = lastData[i].weight;
                     }
                     else{
                         weightSelect.value = weightData[0].weight;
@@ -142,8 +142,8 @@
                             repsSelect.appendChild(option);
                         });
 
-                    if (lastData.reps) {
-                        repsSelect.value = lastData.reps;
+                    if (lastData[i].reps) {
+                        repsSelect.value = lastData[i].reps;
                     }
                     else{
                         repsSelect.value = repsData[0].reps;

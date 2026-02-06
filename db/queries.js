@@ -77,7 +77,8 @@ const getLastDataFromExerciseID = async (exerciseId, userId) => {
         [exerciseId, userId, newestDate],
     );
 
-    return latestData.rows[0];
+    const sets = latestData.rows[0].sets;
+    return latestData.rows.slice(0, sets);
 };
 
 module.exports = {
