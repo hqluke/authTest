@@ -59,8 +59,8 @@
             let select = document.getElementById("select-sets");
 
             document.getElementById("select-sets").addEventListener("change", () => {
-                displayNumSets();
-                displayNumWeight();
+                displayNumSets(false);
+                displayNumWeight(false);
             });
 
             const repDiv = document.querySelector(".ireps");
@@ -68,14 +68,15 @@
 
             window.addEventListener("load", () => {
 
-                if (lastData[0].sets) {
+                if (lastData[0]?.sets) {
                     select.value = lastData[0].sets;
-                    displayNumSets();
-                    displayNumWeight();
+                    displayNumSets(true);
+                    displayNumWeight(true);
                 }
             });
 
-            function displayNumWeight(){
+            function displayNumWeight(firstTime){
+
                 console.log("calling num weight");
                 while(weightDiv.firstChild){
                     weightDiv.removeChild(weightDiv.lastChild);
@@ -102,19 +103,23 @@
                             weightSelect.appendChild(option);
                         });
 
-                    if (lastData[i].weight) {
+                    if (firstTime && lastData[i]?.weight !== undefined) {
                         weightSelect.value = lastData[i].weight;
+                    }
+                    else if (lastData[0]?.weight !== undefined) {
+                        weightSelect.value = lastData[0].weight;
                     }
                     else{
                         weightSelect.value = weightData[0].weight;
                     }
                     weightDiv.appendChild(weightSelect);
+                    cascadeListener("weight");
                 }
 
 
             }
 
-            function displayNumSets(num){
+            function displayNumSets(firstTime){
                 console.log("calling num sets");
                 while(repDiv.firstChild){
                 repDiv.removeChild(repDiv.lastChild);
@@ -142,14 +147,37 @@
                             repsSelect.appendChild(option);
                         });
 
-                    if (lastData[i].reps) {
+                    if (firstTime && lastData[i]?.reps !== undefined) {
                         repsSelect.value = lastData[i].reps;
                     }
                     else{
                         repsSelect.value = repsData[0].reps;
                     }
                     repDiv.appendChild(repsSelect);
+                    cascadeListener("reps");
                 }
+            }
+
+            function getIndexFromId(id){
+                return parseInt(id.split("-").pop(), 10);
+            }
+
+            function cascadeListener(type){
+                document.querySelectorAll(`select[id^="select-${type}-"]`)
+                    .forEach(select => {
+                        select.addEventListener("change", (e) => {
+                            const sourceIndex = getIndexFromId(e.target.id);
+                            const value = e.target.value;
+
+                            document.querySelectorAll(`select[id^="select-${type}-"]`)
+                                .forEach(target => {
+                                    const targetIndex = getIndexFromId(target.id);
+                                    if (targetIndex > sourceIndex) {
+                                        target.value = value;
+                                    }
+                                });
+                        });
+                    });
             }
         </script>
     </body>
