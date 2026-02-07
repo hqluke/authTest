@@ -13,6 +13,8 @@ const app = express();
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
 
+app.use(express.static(path.join(__dirname, "style")));
+
 app.use(
     session({
         // Stores the session in the db in the table user_sessions.

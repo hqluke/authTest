@@ -2,6 +2,7 @@
     <head>
         <meta charset="UTF-8" />
         <title><%= exerciseType %> Exercises</title>
+        <link rel="stylesheet" href="/exercise.css" />
     </head>
     <body>
         <% if (exercises.length === 0) { %>
@@ -9,15 +10,17 @@
         <% } else{ %>
         <h1><%= exerciseType %> Exercises</h1>
         <%exercises.forEach(exercise => {%>
-        <div id="<%= exercise.id %>">
-            <form action="/exercise/insertData" method="GET">
-                <input
-                    type="hidden"
-                    name="exerciseId"
-                    value="<%= exercise.id %>"
-                />
-                <button type="submit"><%= exercise.name %></button>
-            </form>
+        <div class="exercisePContainer">
+            <div id="<%= exercise.id %>" class="exerciseP">
+                <form action="/exercise/insertData" method="GET">
+                    <input
+                        type="hidden"
+                        name="exerciseId"
+                        value="<%= exercise.id %>"
+                    />
+                    <button type="submit"><%= exercise.name %></button>
+                </form>
+            </div>
         </div>
         <%})%> <%}%>
     </body>
