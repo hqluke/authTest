@@ -65,6 +65,9 @@ app.post("/sign-up", async (req, res, next) => {
 const exerciseRouter = require("./routes/exerciseRouter");
 app.use("/exercise", exerciseRouter);
 
+const calendarRouter = require("./routes/calendarRouter");
+app.use("/calendar", calendarRouter);
+
 app.post(
     "/log-in",
     // Calls passport.use to authenticate the user

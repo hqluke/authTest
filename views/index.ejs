@@ -9,6 +9,7 @@
         <h1>WELCOME BACK <%= currentUser.name %> on the / page</h1>
         <a href="/log-out">LOG OUT</a>
         <a href="/exercise">EXERCISE</a>
+        <a href="/calendar">CALENDAR</a>
         <% } else { %>
         <h1>please log in</h1>
         <form action="/log-in" method="POST">
@@ -23,6 +24,7 @@
             <input id="password" name="password" type="password" />
             <button type="submit">Log In</button>
         </form>
+        <a href="/sign-up">SIGN UP</a>
         <%}%>
     </body>
 </html>

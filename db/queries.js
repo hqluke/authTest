@@ -81,6 +81,19 @@ const getLastDataFromExerciseID = async (exerciseId, userId) => {
     return latestData.rows.slice(0, sets);
 };
 
+const getCalendarByYear = async (year = new Date().getFullYear()) => {
+    const calendar = await pool.query(
+        `SELECT c.date, e.name, c.reps, w.weight, c.weight_id, c.sets
+        FROM complete c
+        JOIN exercise e ON c.exercise_id = e.id
+        JOIN weights w ON c.weight_id = w.id
+        WHERE EXTRACT(YEAR FROM c.date) = $1
+        ORDER BY c.date DESC, c.id`,
+        [year],
+    );
+    return calendar.rows;
+};
+
 module.exports = {
     getExercises,
     getWeights,
@@ -92,4 +105,5 @@ module.exports = {
     getLowerBodyExercises,
     getWeightIdFromWeight,
     getLastDataFromExerciseID,
+    getCalendarByYear,
 };
