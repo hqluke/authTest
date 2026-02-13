@@ -1,0 +1,60 @@
+html {
+    background-color: #181a1b;
+    color: white;
+}
+.calendar-container {
+    max-width: 1000px;
+    margin: 20px auto;
+}
+.calendar-container h1 {
+    text-align: center;
+}
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 10px;
+    margin-top: 20px;
+}
+.day-header {
+    text-align: center;
+    font-weight: bold;
+    padding: 10px;
+    background-color: #3f4142;
+    color: white;
+    border-radius: 4px;
+}
+.day-cell {
+    aspect-ratio: 1;
+    border: 1px solid #3f4142;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    border-radius: 4px;
+    background-color: #252729;
+    color: white;
+}
+.workout-day {
+    background-color: #4caf50;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+.workout-day:hover {
+    background-color: #45a049;
+    transform: scale(1.1);
+}
+.empty-day {
+    background-color: #1a1c1d;
+    color: #555;
+}
+.back-link {
+    display: inline-block;
+    margin-bottom: 20px;
+    color: #4caf50;
+    text-decoration: none;
+}
+.back-link:hover {
+    text-decoration: underline;
+}

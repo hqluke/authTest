@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Calendar - <%= month %>/<%= year %></title>
+        <link rel="stylesheet" href="/calendarMonth.css" />
+    </head>
+    <body>
+        <div class="calendar-container">
+            <a href="/calendar?year=<%= year %>" class="back-link">
+                ← Back to Year View
+            </a>
+            <h1>
+                <%= new Date(year, month - 1).toLocaleString('default', { month:
+                'long' }) %> <%= year %>
+            </h1>
+            <div class="calendar-grid">
+                <div class="day-header">Sun</div>
+                <div class="day-header">Mon</div>
+                <div class="day-header">Tue</div>
+                <div class="day-header">Wed</div>
+                <div class="day-header">Thu</div>
+                <div class="day-header">Fri</div>
+                <div class="day-header">Sat</div>
+
+                <% const workoutDates = new Set(workoutDays.map(row =>
+                row.date.getDate())); const firstDay = new Date(year, month - 1,
+                1).getDay(); const daysInMonth = new Date(year, month,
+                0).getDate(); for (let i = 0; i < firstDay; i++) { %>
+                <div class="day-cell empty-day"></div>
+                <% } %> <% for (let day = 1; day <= daysInMonth; day++) { const
+                isWorkoutDay = workoutDates.has(day); if (isWorkoutDay) { %>
+                <a
+                    href="/calendar?year=<%= year %>&month=<%= month %>&day=<%= day %>"
+                    style="text-decoration: none; color: inherit"
+                >
+                    <div class="day-cell workout-day"><%= day %></div>
+                </a>
+                <% } else { %>
+                <div class="day-cell"><%= day %></div>
+                <% } } %>
+            </div>
+            <p style="margin-top: 20px; text-align: center">
+                Total workout days: <strong><%= workoutDays.length %></strong>
+            </p>
+        </div>
+    </body>
+</html>

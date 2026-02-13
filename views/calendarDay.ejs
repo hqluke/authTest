@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Workout Details - <%= month %>/<%= day %>/<%= year %></title>
+        <link rel="stylesheet" href="/calendarDay.css" />
+    </head>
+    <body>
+        <div class="container">
+            <a
+                href="/calendar?year=<%= year %>&month=<%= month %>"
+                class="back-link"
+            >
+                ← Back to Month View
+            </a>
+
+            <h1>Workout Details - <%= month %>/<%= day %>/<%= year %></h1>
+
+            <% if (workouts.length > 0) { %>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Exercise</th>
+                        <th>Sets</th>
+                        <th>Reps</th>
+                        <th>Weight</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% workouts.forEach(function(row) { %>
+                    <tr>
+                        <td><%= row.name %></td>
+                        <td><%= row.sets %></td>
+                        <td><%= row.reps %></td>
+                        <td><%= row.weight %></td>
+                    </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+            <% } else { %>
+            <div class="no-workouts">No workout data found for this day.</div>
+            <% } %>
+        </div>
+    </body>
+</html>

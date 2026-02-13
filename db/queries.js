@@ -81,17 +81,60 @@ const getLastDataFromExerciseID = async (exerciseId, userId) => {
     return latestData.rows.slice(0, sets);
 };
 
-const getCalendarByYear = async (year = new Date().getFullYear()) => {
+const getCalendarByYear = async (userId, year = new Date().getFullYear()) => {
     const calendar = await pool.query(
         `SELECT c.date, e.name, c.reps, w.weight, c.weight_id, c.sets
         FROM complete c
         JOIN exercise e ON c.exercise_id = e.id
         JOIN weights w ON c.weight_id = w.id
-        WHERE EXTRACT(YEAR FROM c.date) = $1
+        WHERE EXTRACT(YEAR FROM c.date) = $1 and c.user_id = $2
         ORDER BY c.date DESC, c.id`,
-        [year],
+        [year, userId],
     );
     return calendar.rows;
+};
+
+const getMonthlyWorkoutCounts = async (
+    userId,
+    year = new Date().getFullYear(),
+) => {
+    const monthlyCounts = await pool.query(
+        `SELECT 
+            EXTRACT(MONTH FROM date) as month,
+            COUNT(DISTINCT date) as workout_days
+        FROM complete
+        WHERE user_id = $1 AND EXTRACT(YEAR FROM date) = $2
+        GROUP BY EXTRACT(MONTH FROM date)
+        ORDER BY month`,
+        [userId, year],
+    );
+    return monthlyCounts.rows;
+};
+
+const getWorkoutDaysInMonth = async (userId, year, month) => {
+    const workoutDays = await pool.query(
+        `SELECT DISTINCT date
+        FROM complete
+        WHERE user_id = $1 
+            AND EXTRACT(YEAR FROM date) = $2 
+            AND EXTRACT(MONTH FROM date) = $3
+        ORDER BY date`,
+        [userId, year, month],
+    );
+    return workoutDays.rows;
+};
+
+const getWorkoutsByDate = async (userId, date) => {
+    const workouts = await pool.query(
+        `SELECT c.date, e.name, c.reps, w.weight, c.weight_id, c.sets
+        FROM complete c
+        JOIN exercise e ON c.exercise_id = e.id
+        JOIN weights w ON c.weight_id = w.id
+        WHERE c.user_id = $1 AND c.date = $2
+        ORDER BY c.id`,
+        [userId, date],
+    );
+    return workouts.rows;
 };
 
 module.exports = {
@@ -106,4 +149,7 @@ module.exports = {
     getWeightIdFromWeight,
     getLastDataFromExerciseID,
     getCalendarByYear,
+    getWorkoutDaysInMonth,
+    getWorkoutsByDate,
+    getMonthlyWorkoutCounts,
 };
