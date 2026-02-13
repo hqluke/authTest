@@ -46,6 +46,18 @@ html {
     background-color: #45a049;
     transform: scale(1.05);
 }
+.empty-workout-day {
+    background-color: #252729;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s;
+    border: 2px dashed #3f4142;
+}
+.empty-workout-day:hover {
+    background-color: #2f3133;
+    border-color: #4caf50;
+    transform: scale(1.05);
+}
 .workout-indicators {
     display: flex;
     gap: 4px;

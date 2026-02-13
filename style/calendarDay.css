@@ -91,7 +91,7 @@ tbody tr:hover {
 .set-row {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 20px;
 }
 .set-item {
     display: grid;

@@ -50,12 +50,12 @@ const getSets = async () => {
     return sets.rows;
 };
 
-const insertData = async (userId, exerciseId, weight, reps, sets) => {
-    const date = new Date().toISOString().split("T")[0]; // Get today's date (YYYY-MM-DD)
+const insertData = async (userId, exerciseId, weight, reps, sets, date = null) => {
+    const dateToUse = date || new Date().toISOString().split("T")[0];
 
     const result = await pool.query(
         "INSERT INTO complete (user_id, date, exercise_id, weight_id, reps, sets) VALUES ($1, $2, $3, $4, $5, $6)",
-        [userId, date, exerciseId, weight, reps, sets],
+        [userId, dateToUse, exerciseId, weight, reps, sets],
     );
     return result.rows;
 };
@@ -245,11 +245,11 @@ const deleteExerciseData = async (completeId) => {
     return result;
 };
 
-const insertRun = async (userId, duration, distance) => {
-    const date = new Date().toISOString().split("T")[0];
+const insertRun = async (userId, duration, distance, date = null) => {
+    const dateToUse = date || new Date().toISOString().split("T")[0];
     const result = await pool.query(
         "INSERT INTO run (user_id, date, duration, distance) VALUES ($1, $2, $3, $4) RETURNING *",
-        [userId, date, duration, distance]
+        [userId, dateToUse, duration, distance]
     );
     return result.rows[0];
 };

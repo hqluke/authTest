@@ -5,23 +5,22 @@
         <link rel="stylesheet" href="/exercise.css" />
     </head>
     <body>
-        <% if (exercises.length === 0) { %>
-        <h1>No <%= exerciseType %> exercises found</h1>
-        <% } else{ %>
-        <h1><%= exerciseType %> Exercises</h1>
-        <%exercises.forEach(exercise => {%>
-        <div class="exercisePContainer">
-            <div id="<%= exercise.id %>" class="exerciseP">
-                <form action="/exercise/insertData" method="GET">
-                    <input
-                        type="hidden"
-                        name="exerciseId"
-                        value="<%= exercise.id %>"
-                    />
-                    <button type="submit"><%= exercise.name %></button>
-                </form>
-            </div>
+        <div class="eHeader">
+            <h1><%= exerciseType %> Exercises</h1>
         </div>
-        <%})%> <%}%>
+        <div class="exercisePContainer">
+            <% exercises.forEach(exercise => { %>
+            <div class="exerciseP">
+                <a href="/exercise/insertData?exerciseId=<%= exercise.id %><%= year && month && day ? `&year=${year}&month=${month}&day=${day}` : '' %>">
+                    <button><%= exercise.name %></button>
+                </a>
+            </div>
+            <% }) %>
+        </div>
+        <div class="bottom-buttons">
+            <a href="/exercise?<%= year && month && day ? `year=${year}&month=${month}&day=${day}` : '' %>">
+                <button class="back-button">Back</button>
+            </a>
+        </div>
     </body>
 </html>

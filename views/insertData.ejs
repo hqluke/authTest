@@ -6,13 +6,21 @@
     </head>
     <body>
         <h1><%= exercise.name %></h1>
+        <% if (year && month && day) { %>
+            <p style="text-align: center; color: #4caf50; font-size: 1.2rem;">
+                Date: <%= month %>/<%= day %>/<%= year %>
+            </p>
+        <% } %>
         <form action="/exercise/insertData" method="POST">
             <input type="hidden" name="exerciseId" value="<%= exercise.id %>" />
-            <input
-                type="hidden"
-                name="isUpperBody"
-                value="<%= exercise.isupperbody %>"
-            />
+            <input type="hidden" name="isUpperBody" value="<%= exercise.isupperbody %>" />
+            <% if (year && month && day) { %>
+                <input type="hidden" name="year" value="<%= year %>" />
+                <input type="hidden" name="month" value="<%= month %>" />
+                <input type="hidden" name="day" value="<%= day %>" />
+            <% } %>
+            
+            <!-- rest of your form stays the same -->
             <div class="iContainer">
                 <div class="isets">
                     <label for="select-sets">Sets</label>

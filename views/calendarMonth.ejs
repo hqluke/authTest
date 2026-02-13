@@ -59,9 +59,11 @@
                         </div>
                     </a>
                 <% } else { %>
-                    <div class="day-cell">
-                        <%= day %>
-                    </div>
+                    <a href="/exercise?year=<%= year %>&month=<%= month %>&day=<%= day %>" style="text-decoration: none; color: inherit;">
+                        <div class="day-cell empty-workout-day">
+                            <%= day %>
+                        </div>
+                    </a>
                 <% } } %>
             </div>
             
