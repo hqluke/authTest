@@ -6,38 +6,88 @@
     </head>
     <body>
         <div class="container">
-            <a
-                href="/calendar?year=<%= year %>&month=<%= month %>"
-                class="back-link"
-            >
+            <a href="/calendar?year=<%= year %>&month=<%= month %>" class="back-link">
                 ← Back to Month View
             </a>
-
+            
             <h1>Workout Details - <%= month %>/<%= day %>/<%= year %></h1>
-
-            <% if (workouts.length > 0) { %>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Exercise</th>
-                        <th>Sets</th>
-                        <th>Reps</th>
-                        <th>Weight</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <% workouts.forEach(function(row) { %>
-                    <tr>
-                        <td><%= row.name %></td>
-                        <td><%= row.sets %></td>
-                        <td><%= row.reps %></td>
-                        <td><%= row.weight %></td>
-                    </tr>
+            
+            <% if (runs && runs.length > 0) { %>
+                <div class="section-title">Running</div>
+                <div class="run-section">
+                    <% runs.forEach(function(run) { %>
+                        <div class="run-stats">
+                            <div class="run-stat">
+                                <div class="run-stat-label">Duration</div>
+                                <div class="run-stat-value"><%= run.duration %></div>
+                            </div>
+                            <div class="run-stat">
+                                <div class="run-stat-label">Distance (miles)</div>
+                                <div class="run-stat-value"><%= run.distance %></div>
+                            </div>
+                        </div>
                     <% }) %>
-                </tbody>
-            </table>
-            <% } else { %>
-            <div class="no-workouts">No workout data found for this day.</div>
+                </div>
+            <% } %>
+            
+            <% 
+            // Separate workouts into upper and lower body
+            const upperWorkouts = workouts ? workouts.filter(w => w.isupperbody === true) : [];
+            const lowerWorkouts = workouts ? workouts.filter(w => w.isupperbody === false) : [];
+            %>
+            
+            <% if (upperWorkouts.length > 0) { %>
+                <div class="section-title">Upper Body</div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Exercise</th>
+                            <th>Sets</th>
+                            <th>Reps</th>
+                            <th>Weight</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% upperWorkouts.forEach(function(row) { %>
+                        <tr>
+                            <td><%= row.name %></td>
+                            <td><%= row.sets %></td>
+                            <td><%= row.reps %></td>
+                            <td><%= row.weight %></td>
+                        </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            <% } %>
+            
+            <% if (lowerWorkouts.length > 0) { %>
+                <div class="section-title">Lower Body</div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Exercise</th>
+                            <th>Sets</th>
+                            <th>Reps</th>
+                            <th>Weight</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% lowerWorkouts.forEach(function(row) { %>
+                        <tr>
+                            <td><%= row.name %></td>
+                            <td><%= row.sets %></td>
+                            <td><%= row.reps %></td>
+                            <td><%= row.weight %></td>
+                        </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            <% } %>
+            
+            <% if ((!runs || runs.length === 0) && (!workouts || workouts.length === 0)) { %>
+                <div class="no-data">
+                    No workout data found for this day.
+                </div>
             <% } %>
         </div>
     </body>

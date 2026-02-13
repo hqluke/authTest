@@ -94,23 +94,52 @@ const getCalendarByYear = async (userId, year = new Date().getFullYear()) => {
     return calendar.rows;
 };
 
-const getMonthlyWorkoutCounts = async (
-    userId,
-    year = new Date().getFullYear(),
-) => {
+const getMonthlyWorkoutCounts = async (userId, year = new Date().getFullYear()) => {
     const monthlyCounts = await pool.query(
-        `SELECT 
-            EXTRACT(MONTH FROM date) as month,
-            COUNT(DISTINCT date) as workout_days
-        FROM complete
-        WHERE user_id = $1 AND EXTRACT(YEAR FROM date) = $2
-        GROUP BY EXTRACT(MONTH FROM date)
+        `WITH all_workout_dates AS (
+            SELECT DISTINCT 
+                EXTRACT(MONTH FROM date) as month,
+                date
+            FROM complete
+            WHERE user_id = $1 AND EXTRACT(YEAR FROM date) = $2
+            
+            UNION
+            
+            SELECT DISTINCT 
+                EXTRACT(MONTH FROM date) as month,
+                date
+            FROM run
+            WHERE user_id = $1 AND EXTRACT(YEAR FROM date) = $2
+        )
+        SELECT 
+            month,
+            COUNT(DISTINCT date) as total_days,
+            COUNT(DISTINCT CASE WHEN EXISTS (
+                SELECT 1 FROM complete c
+                JOIN exercise e ON c.exercise_id = e.id
+                WHERE c.date = awd.date 
+                AND c.user_id = $1
+                AND e.isupperbody = true
+            ) THEN date END) as upper_days,
+            COUNT(DISTINCT CASE WHEN EXISTS (
+                SELECT 1 FROM complete c
+                JOIN exercise e ON c.exercise_id = e.id
+                WHERE c.date = awd.date 
+                AND c.user_id = $1
+                AND e.isupperbody = false
+            ) THEN date END) as lower_days,
+            COUNT(DISTINCT CASE WHEN EXISTS (
+                SELECT 1 FROM run r
+                WHERE r.date = awd.date 
+                AND r.user_id = $1
+            ) THEN date END) as run_days
+        FROM all_workout_dates awd
+        GROUP BY month
         ORDER BY month`,
-        [userId, year],
+        [userId, year]
     );
     return monthlyCounts.rows;
 };
-
 const getWorkoutDaysInMonth = async (userId, year, month) => {
     const workoutDays = await pool.query(
         `SELECT DISTINCT date
@@ -126,17 +155,63 @@ const getWorkoutDaysInMonth = async (userId, year, month) => {
 
 const getWorkoutsByDate = async (userId, date) => {
     const workouts = await pool.query(
-        `SELECT c.date, e.name, c.reps, w.weight, c.weight_id, c.sets
+        `SELECT c.date, e.name, c.reps, w.weight, c.weight_id, c.sets, e.isupperbody
         FROM complete c
         JOIN exercise e ON c.exercise_id = e.id
         JOIN weights w ON c.weight_id = w.id
         WHERE c.user_id = $1 AND c.date = $2
         ORDER BY c.id`,
-        [userId, date],
+        [userId, date]
     );
     return workouts.rows;
 };
 
+const getMonthlyWorkoutBreakdown = async (userId, year, month) => {
+    const breakdown = await pool.query(
+        `WITH workout_dates AS (
+            SELECT DISTINCT date FROM complete WHERE user_id = $1
+            AND EXTRACT(YEAR FROM date) = $2 
+            AND EXTRACT(MONTH FROM date) = $3
+            UNION
+            SELECT DISTINCT date FROM run WHERE user_id = $1
+            AND EXTRACT(YEAR FROM date) = $2 
+            AND EXTRACT(MONTH FROM date) = $3
+        )
+        SELECT 
+            wd.date,
+            EXISTS(
+                SELECT 1 FROM complete c 
+                JOIN exercise e ON c.exercise_id = e.id 
+                WHERE c.date = wd.date AND c.user_id = $1 AND e.isupperbody = true
+            ) as has_upper,
+            EXISTS(
+                SELECT 1 FROM complete c 
+                JOIN exercise e ON c.exercise_id = e.id 
+                WHERE c.date = wd.date AND c.user_id = $1 AND e.isupperbody = false
+            ) as has_lower,
+            EXISTS(
+                SELECT 1 FROM run r 
+                WHERE r.date = wd.date AND r.user_id = $1
+            ) as has_run
+        FROM workout_dates wd
+        ORDER BY wd.date`,
+        [userId, year, month],
+    );
+    return breakdown.rows;
+};
+
+const getRunsByDate = async (userId, date) => {
+    const runs = await pool.query(
+        `SELECT 
+            date, 
+            TO_CHAR(duration, 'HH24:MI:SS') as duration,
+            distance
+        FROM run
+        WHERE user_id = $1 AND date = $2`,
+        [userId, date]
+    );
+    return runs.rows;
+};
 module.exports = {
     getExercises,
     getWeights,
@@ -152,4 +227,6 @@ module.exports = {
     getWorkoutDaysInMonth,
     getWorkoutsByDate,
     getMonthlyWorkoutCounts,
+    getMonthlyWorkoutBreakdown,
+    getRunsByDate,
 };

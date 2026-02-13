@@ -6,24 +6,70 @@
     </head>
     <body>
         <h1>Workout Calendar - <%= year %></h1>
-
         <div class="month-grid">
-            <% const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-            'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']; const countMap = {};
-            monthlyCounts.forEach(row => { countMap[row.month] =
-            row.workout_days; }); for (let i = 1; i <= 12; i++) { const count =
-            countMap[i] || 0; %>
-            <a
-                href="/calendar?year=<%= year %>&month=<%= i %>"
-                style="text-decoration: none; color: inherit"
-            >
-                <div class="month-card">
-                    <div class="month-name"><%= monthNames[i-1] %></div>
-                    <div class="workout-count"><%= count %></div>
-                    <div class="workout-label">days</div>
-                </div>
-            </a>
+            <% 
+            let totalUpper = 0;
+            let totalLower = 0;
+            let totalRuns = 0;
+            let totalNumDays = 0;
+            const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            
+            const countMap = {};
+            monthlyCounts.forEach(row => {
+                const month = row.month;
+                if (!countMap[month]) {
+                    countMap[month] = {
+                        total_days: 0,
+                        upper_days: 0,
+                        lower_days: 0,
+                        run_days: 0
+                    };
+                }
+                countMap[month].total_days += parseInt(row.total_days || 0, 10);
+                countMap[month].upper_days += parseInt(row.upper_days || 0, 10);
+                countMap[month].lower_days += parseInt(row.lower_days || 0, 10);
+                countMap[month].run_days += parseInt(row.run_days || 0, 10);
+            });
+            
+            for (let i = 1; i <= 12; i++) {
+                const data = countMap[i] || { total_days: 0, upper_days: 0, lower_days: 0, run_days: 0 };
+                
+                // Calculate this month's total unique workout days
+                const monthTotalDays = data.total_days;
+                
+                totalUpper += data.upper_days;
+                totalLower += data.lower_days;
+                totalRuns += data.run_days;
+                totalNumDays += monthTotalDays;
+            %>
+                <a href="/calendar?year=<%= year %>&month=<%= i %>" style="text-decoration: none; color: inherit">
+                    <div class="month-card">
+                        <div class="month-name"><%= monthNames[i-1] %> (<%= monthTotalDays %>)</div>
+                        <div class="workout-breakdown">
+                            <div>Upper: <%= data.upper_days %></div>
+                            <div>Lower: <%= data.lower_days %></div>
+                            <div>Runs: <%= data.run_days %></div>
+                        </div>
+                    </div>
+                </a>
             <% } %>
+        </div>
+        <div class="total-stats">
+            <h2>Year Totals (<%= totalNumDays %> days)</h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-label">💪 Upper Body</div>
+                    <div class="stat-value"><%= totalUpper %></div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">🦵 Lower Body</div>
+                    <div class="stat-value"><%= totalLower %></div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">🏃 Runs</div>
+                    <div class="stat-value"><%= totalRuns %></div>
+                </div>
+            </div>
         </div>
     </body>
 </html>

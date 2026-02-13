@@ -27,6 +27,7 @@ html {
     aspect-ratio: 1;
     border: 1px solid #3f4142;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     font-size: 18px;
@@ -43,7 +44,13 @@ html {
 }
 .workout-day:hover {
     background-color: #45a049;
-    transform: scale(1.1);
+    transform: scale(1.05);
+}
+.workout-indicators {
+    display: flex;
+    gap: 4px;
+    font-size: 14px;
+    margin-top: 4px;
 }
 .empty-day {
     background-color: #1a1c1d;
@@ -57,4 +64,18 @@ html {
 }
 .back-link:hover {
     text-decoration: underline;
+}
+.month-summary {
+    margin-top: 30px;
+    padding: 20px;
+    background-color: #252729;
+    border: 2px solid #3f4142;
+    border-radius: 8px;
+}
+.month-summary h3 {
+    margin-top: 0;
+}
+.month-summary p {
+    margin: 10px 0;
+    font-size: 18px;
 }
