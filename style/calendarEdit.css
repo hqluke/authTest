@@ -1,0 +1,96 @@
+html {
+    background-color: #181a1b;
+    color: white;
+}
+.container {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 20px;
+}
+h1 {
+    text-align: center;
+    color: #4caf50;
+}
+.back-link {
+    display: inline-block;
+    margin-bottom: 20px;
+    color: #4caf50;
+    text-decoration: none;
+}
+.back-link:hover {
+    text-decoration: underline;
+}
+.form-container {
+    background-color: #252729;
+    padding: 30px;
+    border-radius: 8px;
+    border: 2px solid #3f4142;
+}
+.set-row {
+    display: grid;
+    grid-template-columns: 80px 1fr 1fr 1fr 100px;
+    gap: 15px;
+    margin-bottom: 15px;
+    align-items: center;
+    padding: 15px;
+    background-color: #181a1b;
+    border-radius: 8px;
+}
+.set-row label {
+    font-weight: bold;
+    color: #4caf50;
+}
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+.form-group label {
+    font-size: 14px;
+    color: #ccc;
+}
+select {
+    height: 40px;
+    padding: 5px;
+    background-color: #3f4142;
+    color: white;
+    border: 1px solid #555;
+    border-radius: 4px;
+    font-size: 16px;
+}
+.button-group {
+    display: flex;
+    gap: 15px;
+    margin-top: 30px;
+    justify-content: center;
+}
+button {
+    padding: 12px 30px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+.btn-save {
+    background-color: #4caf50;
+    color: white;
+}
+.btn-save:hover {
+    background-color: #45a049;
+}
+.btn-delete {
+    margin-top: 1.3rem;
+    background-color: #f44336;
+    color: white;
+}
+.btn-delete:hover {
+    background-color: #da190b;
+}
+.btn-cancel {
+    background-color: #3f4142;
+    color: white;
+}
+.btn-cancel:hover {
+    background-color: #4f5254;
+}

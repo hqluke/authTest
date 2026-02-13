@@ -10,5 +10,8 @@ const isAuthenticated = (req, res, next) => {
 };
 
 router.get("/", isAuthenticated, calendarController.getCalendar);
+router.get("/edit", isAuthenticated, calendarController.getEditExercise);
+router.post("/edit", isAuthenticated, calendarController.postEditExercise);
+router.post("/delete", isAuthenticated, calendarController.deleteExercise);
 
 module.exports = router;

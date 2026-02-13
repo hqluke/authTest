@@ -13,7 +13,7 @@
             <h1>Workout Details - <%= month %>/<%= day %>/<%= year %></h1>
             
             <% if (runs && runs.length > 0) { %>
-                <div class="section-title">Running</div>
+                <div class="section-title">🏃 Running</div>
                 <div class="run-section">
                     <% runs.forEach(function(run) { %>
                         <div class="run-stats">
@@ -31,53 +31,99 @@
             <% } %>
             
             <% 
-            // Separate workouts into upper and lower body
             const upperWorkouts = workouts ? workouts.filter(w => w.isupperbody === true) : [];
             const lowerWorkouts = workouts ? workouts.filter(w => w.isupperbody === false) : [];
+            
+            function groupByExercise(workoutList) {
+                const grouped = {};
+                workoutList.forEach(w => {
+                    const key = w.exercise_id || w.name;
+                    if (!grouped[key]) {
+                        grouped[key] = {
+                            name: w.name,
+                            exercise_id: w.exercise_id,
+                            items: []
+                        };
+                    }
+                    grouped[key].items.push(w);
+                });
+                return Object.values(grouped);
+            }
+            
+            const upperGrouped = groupByExercise(upperWorkouts);
+            const lowerGrouped = groupByExercise(lowerWorkouts);
             %>
             
-            <% if (upperWorkouts.length > 0) { %>
-                <div class="section-title">Upper Body</div>
+            <% if (upperGrouped.length > 0) { %>
+                <div class="section-title">💪 Upper Body</div>
                 <table>
                     <thead>
                         <tr>
                             <th>Exercise</th>
                             <th>Sets</th>
-                            <th>Reps</th>
-                            <th>Weight</th>
+                            <th>Weight / Reps</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <% upperWorkouts.forEach(function(row) { %>
+                        <% upperGrouped.forEach(function(group) { 
+                            const firstItem = group.items[0];
+                        %>
                         <tr>
-                            <td><%= row.name %></td>
-                            <td><%= row.sets %></td>
-                            <td><%= row.reps %></td>
-                            <td><%= row.weight %></td>
+                            <td>
+                                <a href="/calendar/edit?year=<%= year %>&month=<%= month %>&day=<%= day %>&exerciseId=<%= firstItem.exercise_id %>" 
+                                   class="exercise-link">
+                                    <%= group.name %>
+                                </a>
+                            </td>
+                            <td><%= firstItem.sets %></td>
+                            <td>
+                                <div class="set-row">
+                                    <% group.items.forEach(item => { %>
+                                        <div class="set-item">
+                                            <span><%= item.weight %></span>
+                                            <span><%= item.reps %></span>
+                                        </div>
+                                    <% }) %>
+                                </div>
+                            </td>
                         </tr>
                         <% }) %>
                     </tbody>
                 </table>
             <% } %>
             
-            <% if (lowerWorkouts.length > 0) { %>
-                <div class="section-title">Lower Body</div>
+            <% if (lowerGrouped.length > 0) { %>
+                <div class="section-title">🦵 Lower Body</div>
                 <table>
                     <thead>
                         <tr>
                             <th>Exercise</th>
                             <th>Sets</th>
-                            <th>Reps</th>
-                            <th>Weight</th>
+                            <th>Weight / Reps</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <% lowerWorkouts.forEach(function(row) { %>
+                        <% lowerGrouped.forEach(function(group) { 
+                            const firstItem = group.items[0];
+                        %>
                         <tr>
-                            <td><%= row.name %></td>
-                            <td><%= row.sets %></td>
-                            <td><%= row.reps %></td>
-                            <td><%= row.weight %></td>
+                            <td>
+                                <a href="/calendar/edit?year=<%= year %>&month=<%= month %>&day=<%= day %>&exerciseId=<%= firstItem.exercise_id %>" 
+                                   class="exercise-link">
+                                    <%= group.name %>
+                                </a>
+                            </td>
+                            <td><%= firstItem.sets %></td>
+                            <td>
+                                <div class="set-row">
+                                    <% group.items.forEach(item => { %>
+                                        <div class="set-item">
+                                            <span><%= item.weight %></span>
+                                            <span><%= item.reps %></span>
+                                        </div>
+                                    <% }) %>
+                                </div>
+                            </td>
                         </tr>
                         <% }) %>
                     </tbody>

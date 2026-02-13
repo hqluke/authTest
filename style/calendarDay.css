@@ -80,6 +80,28 @@ tbody tr {
 tbody tr:hover {
     background-color: #2f3133;
 }
+.exercise-link {
+    color: #4caf50;
+    text-decoration: none;
+    cursor: pointer;
+}
+.exercise-link:hover {
+    text-decoration: underline;
+}
+.set-row {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+.set-item {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    font-family: monospace;
+}
+.set-item span:nth-of-type(2) {
+    margin-left: -90px;
+}
 .no-data {
     text-align: center;
     padding: 40px;

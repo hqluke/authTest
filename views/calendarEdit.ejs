@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Edit Exercise - <%= exerciseData[0].name %></title>
+        <link rel="stylesheet" href="/calendarEdit.css" />
+    </head>
+    <body>
+        <div class="container">
+            <a href="/calendar?year=<%= year %>&month=<%= month %>&day=<%= day %>" class="back-link">
+                ← Back to Day View
+            </a>
+            
+            <h1>Edit <%= exerciseData[0].name %></h1>
+            <p style="text-align: center; color: #999;"><%= month %>/<%= day %>/<%= year %></p>
+            
+            <form action="/calendar/edit" method="POST" class="form-container">
+                <input type="hidden" name="year" value="<%= year %>">
+                <input type="hidden" name="month" value="<%= month %>">
+                <input type="hidden" name="day" value="<%= day %>">
+                
+                <% exerciseData.forEach((set, index) => { %>
+                    <div class="set-row">
+                        <label>Set <%= index + 1 %></label>
+                        
+                        <input type="hidden" name="id-<%= set.id %>" value="<%= set.id %>">
+                        
+                        <div class="form-group">
+                            <label>Sets</label>
+                            <select name="sets-<%= set.id %>">
+                                <% for(let i = 1; i <= 10; i++) { %>
+                                    <option value="<%= i %>" <%= set.sets == i ? 'selected' : '' %>><%= i %></option>
+                                <% } %>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Reps</label>
+                            <select name="reps-<%= set.id %>">
+                                <% reps.forEach(rep => { %>
+                                    <option value="<%= rep.reps %>" <%= set.reps == rep.reps ? 'selected' : '' %>>
+                                        <%= rep.reps %>
+                                    </option>
+                                <% }) %>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Weight</label>
+                            <select name="weight-<%= set.id %>">
+                                <% weights.forEach(weight => { %>
+                                    <option value="<%= weight.weight %>" <%= set.weight == weight.weight ? 'selected' : '' %>>
+                                        <%= weight.weight %>
+                                    </option>
+                                <% }) %>
+                            </select>
+                        </div>
+                        
+                        <button type="button" class="btn-delete" 
+                                onclick="deleteSet(<%= set.id %>, <%= year %>, <%= month %>, <%= day %>)">
+                            Delete
+                        </button>
+                    </div>
+                <% }) %>
+                
+                <div class="button-group">
+                    <button type="submit" class="btn-save">Save Changes</button>
+                    <a href="/calendar?year=<%= year %>&month=<%= month %>&day=<%= day %>">
+                        <button type="button" class="btn-cancel">Cancel</button>
+                    </a>
+                </div>
+            </form>
+        </div>
+        
+        <script>
+            function deleteSet(id, year, month, day) {
+                if (confirm('Are you sure you want to delete this set?')) {
+                    const form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = '/calendar/delete';
+                    
+                    const idInput = document.createElement('input');
+                    idInput.type = 'hidden';
+                    idInput.name = 'id';
+                    idInput.value = id;
+                    
+                    const yearInput = document.createElement('input');
+                    yearInput.type = 'hidden';
+                    yearInput.name = 'year';
+                    yearInput.value = year;
+                    
+                    const monthInput = document.createElement('input');
+                    monthInput.type = 'hidden';
+                    monthInput.name = 'month';
+                    monthInput.value = month;
+                    
+                    const dayInput = document.createElement('input');
+                    dayInput.type = 'hidden';
+                    dayInput.name = 'day';
+                    dayInput.value = day;
+                    
+                    form.appendChild(idInput);
+                    form.appendChild(yearInput);
+                    form.appendChild(monthInput);
+                    form.appendChild(dayInput);
+                    
+                    document.body.appendChild(form);
+                    form.submit();
+                }
+            }
+        </script>
+    </body>
+</html>

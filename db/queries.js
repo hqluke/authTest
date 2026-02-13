@@ -155,7 +155,7 @@ const getWorkoutDaysInMonth = async (userId, year, month) => {
 
 const getWorkoutsByDate = async (userId, date) => {
     const workouts = await pool.query(
-        `SELECT c.date, e.name, c.reps, w.weight, c.weight_id, c.sets, e.isupperbody
+        `SELECT c.id, c.date, e.name, e.id as exercise_id, c.reps, w.weight, c.weight_id, c.sets, e.isupperbody
         FROM complete c
         JOIN exercise e ON c.exercise_id = e.id
         JOIN weights w ON c.weight_id = w.id
@@ -212,6 +212,39 @@ const getRunsByDate = async (userId, date) => {
     );
     return runs.rows;
 };
+
+const getExerciseDataByDateAndExercise = async (userId, date, exerciseId) => {
+    const data = await pool.query(
+        `SELECT c.id, c.date, e.name, e.id as exercise_id, c.reps, w.weight, c.weight_id, c.sets, e.isupperbody
+        FROM complete c
+        JOIN exercise e ON c.exercise_id = e.id
+        JOIN weights w ON c.weight_id = w.id
+        WHERE c.user_id = $1 AND c.date = $2 AND c.exercise_id = $3
+        ORDER BY c.id`,
+        [userId, date, exerciseId]
+    );
+    return data.rows;
+};
+
+const updateExerciseData = async (completeId, weightId, reps, sets) => {
+    const result = await pool.query(
+        `UPDATE complete 
+        SET weight_id = $1, reps = $2, sets = $3
+        WHERE id = $4
+        RETURNING *`,
+        [weightId, reps, sets, completeId]
+    );
+    return result.rows[0];
+};
+
+const deleteExerciseData = async (completeId) => {
+    const result = await pool.query(
+        `DELETE FROM complete WHERE id = $1`,
+        [completeId]
+    );
+    return result;
+};
+
 module.exports = {
     getExercises,
     getWeights,
@@ -229,4 +262,7 @@ module.exports = {
     getMonthlyWorkoutCounts,
     getMonthlyWorkoutBreakdown,
     getRunsByDate,
+    getExerciseDataByDateAndExercise,
+    updateExerciseData,
+    deleteExerciseData,
 };
