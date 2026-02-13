@@ -1,39 +1,39 @@
-<!DOCTYPE html>
 <html lang="en">
     <head>
         <meta charset="UTF-8" />
-        <title>Log In</title>
+        <title>Exercise Selection</title>
+        <link rel="stylesheet" href="/exercise.css" />
     </head>
     <body>
-        <% if (locals.currentUser) {%>
-        <h1>WELCOME BACK <%= currentUser.name %> we on da home page</h1>
-        <a href="/log-out">LOG OUT</a>
-        <h1>Selct Day</h1>
-        <div class="upperButton">
+        <div class="eHeader">
+            <h1>Select Workout Type</h1>
+        </div>
+        <div class="button-container">
             <a href="/exercise/upper">
-                <button>Upper</button>
+                <button class="exercise-button upper-button">
+                    💪 Upper Body
+                </button>
             </a>
-        </div>
-        <div class="lowerButton">
             <a href="/exercise/lower">
-                <button>Lower</button>
+                <button class="exercise-button lower-button">
+                    🦵 Lower Body
+                </button>
+            </a>
+            <a href="/exercise/run">
+                <button class="exercise-button run-button">🏃 Run</button>
             </a>
         </div>
-
-        <% } else { %>
-        <h1>please log in</h1>
-        <form action="/log-in" method="POST">
-            <label for="username">Username</label>
-            <input
-                id="username"
-                name="username"
-                placeholder="username"
-                type="text"
-            />
-            <label for="password">Password</label>
-            <input id="password" name="password" type="password" />
-            <button type="submit">Log In</button>
-        </form>
-        <%}%>
+        <div class="bottom-buttons">
+            <div class="back-button">
+                <a href="/">
+                    <button class="back-button">Back to Home</button>
+                </a>
+            </div>
+            <div class="logout-container">
+                <a href="/log-out">
+                    <button class="logout-button">Log Out</button>
+                </a>
+            </div>
+        </div>
     </body>
 </html>

@@ -245,6 +245,15 @@ const deleteExerciseData = async (completeId) => {
     return result;
 };
 
+const insertRun = async (userId, duration, distance) => {
+    const date = new Date().toISOString().split("T")[0];
+    const result = await pool.query(
+        "INSERT INTO run (user_id, date, duration, distance) VALUES ($1, $2, $3, $4) RETURNING *",
+        [userId, date, duration, distance]
+    );
+    return result.rows[0];
+};
+
 module.exports = {
     getExercises,
     getWeights,
@@ -265,4 +274,5 @@ module.exports = {
     getExerciseDataByDateAndExercise,
     updateExerciseData,
     deleteExerciseData,
+    insertRun,
 };
