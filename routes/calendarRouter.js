@@ -9,9 +9,12 @@ const isAuthenticated = (req, res, next) => {
     res.redirect("/");
 };
 
-router.get("/", isAuthenticated, calendarController.getCalendar);
-router.get("/edit", isAuthenticated, calendarController.getEditExercise);
-router.post("/edit", isAuthenticated, calendarController.postEditExercise);
-router.post("/delete", isAuthenticated, calendarController.deleteExercise);
+router.get("/", calendarController.getCalendar);
+router.get("/edit", calendarController.getEditExercise);
+router.post("/edit", calendarController.postEditExercise);
+router.post("/delete", calendarController.deleteExercise);
 
+router.get("/edit-run", calendarController.getEditRun);
+router.post("/edit-run", calendarController.postEditRun);
+router.post("/delete-run", calendarController.deleteRunPost);
 module.exports = router;

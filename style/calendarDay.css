@@ -10,14 +10,36 @@ html {
 .container h1 {
     text-align: center;
 }
+.header-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
 .back-link {
     display: inline-block;
-    margin-bottom: 20px;
     color: #4caf50;
     text-decoration: none;
 }
 .back-link:hover {
     text-decoration: underline;
+}
+.add-workout-btn {
+    background-color: #4caf50;
+    color: white;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    transition: all 0.3s;
+}
+.add-workout-btn:hover {
+    background-color: #45a049;
+    transform: scale(1.05);
 }
 .section-title {
     font-size: 24px;
@@ -34,6 +56,12 @@ html {
     border-radius: 8px;
     border: 2px solid #3f4142;
     margin-bottom: 20px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+.run-section:hover {
+    background-color: #2f3133;
+    border-color: #4caf50;
 }
 .run-stats {
     display: grid;
@@ -56,6 +84,13 @@ html {
     font-size: 28px;
     font-weight: bold;
     color: #4caf50;
+}
+.edit-hint {
+    text-align: center;
+    color: #999;
+    font-size: 14px;
+    margin-top: 10px;
+    font-style: italic;
 }
 table {
     width: 100%;
@@ -91,16 +126,20 @@ tbody tr:hover {
 .set-row {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 4px;
 }
 .set-item {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
+    grid-template-columns: 50px 70px;
+    gap: 20px;
     font-family: monospace;
+    font-size: 16px;
 }
-.set-item span:nth-of-type(2) {
-    margin-left: -90px;
+.set-item span:first-child {
+    text-align: right;
+}
+.set-item span:last-child {
+    text-align: left;
 }
 .no-data {
     text-align: center;

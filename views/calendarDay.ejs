@@ -6,28 +6,36 @@
     </head>
     <body>
         <div class="container">
-            <a href="/calendar?year=<%= year %>&month=<%= month %>" class="back-link">
-                ← Back to Month View
-            </a>
+            <div class="header-section">
+                <a href="/calendar?year=<%= year %>&month=<%= month %>" class="back-link">
+                    ← Back to Month View
+                </a>
+                <a href="/exercise?year=<%= year %>&month=<%= month %>&day=<%= day %>" class="add-workout-btn">
+                    + Add Workout
+                </a>
+            </div>
             
             <h1>Workout Details - <%= month %>/<%= day %>/<%= year %></h1>
             
             <% if (runs && runs.length > 0) { %>
                 <div class="section-title">🏃 Running</div>
-                <div class="run-section">
-                    <% runs.forEach(function(run) { %>
-                        <div class="run-stats">
-                            <div class="run-stat">
-                                <div class="run-stat-label">Duration</div>
-                                <div class="run-stat-value"><%= run.duration %></div>
+                <% runs.forEach(function(run) { %>
+                    <a href="/calendar/edit-run?runId=<%= run.id %>&year=<%= year %>&month=<%= month %>&day=<%= day %>" style="text-decoration: none; color: inherit;">
+                        <div class="run-section">
+                            <div class="run-stats">
+                                <div class="run-stat">
+                                    <div class="run-stat-label">Duration</div>
+                                    <div class="run-stat-value"><%= run.duration %></div>
+                                </div>
+                                <div class="run-stat">
+                                    <div class="run-stat-label">Distance (miles)</div>
+                                    <div class="run-stat-value"><%= run.distance %></div>
+                                </div>
                             </div>
-                            <div class="run-stat">
-                                <div class="run-stat-label">Distance (miles)</div>
-                                <div class="run-stat-value"><%= run.distance %></div>
-                            </div>
+                            <div class="edit-hint">Click to edit</div>
                         </div>
-                    <% }) %>
-                </div>
+                    </a>
+                <% }) %>
             <% } %>
             
             <% 
@@ -61,7 +69,7 @@
                         <tr>
                             <th>Exercise</th>
                             <th>Sets</th>
-                            <th>Weight / Reps</th>
+                            <th>Reps / Weight</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -80,8 +88,8 @@
                                 <div class="set-row">
                                     <% group.items.forEach(item => { %>
                                         <div class="set-item">
-                                            <span><%= item.weight %></span>
                                             <span><%= item.reps %></span>
+                                            <span><%= item.weight %></span>
                                         </div>
                                     <% }) %>
                                 </div>
@@ -99,7 +107,7 @@
                         <tr>
                             <th>Exercise</th>
                             <th>Sets</th>
-                            <th>Weight / Reps</th>
+                            <th>Reps / Weight</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -118,8 +126,8 @@
                                 <div class="set-row">
                                     <% group.items.forEach(item => { %>
                                         <div class="set-item">
-                                            <span><%= item.weight %></span>
                                             <span><%= item.reps %></span>
+                                            <span><%= item.weight %></span>
                                         </div>
                                     <% }) %>
                                 </div>
@@ -133,6 +141,10 @@
             <% if ((!runs || runs.length === 0) && (!workouts || workouts.length === 0)) { %>
                 <div class="no-data">
                     No workout data found for this day.
+                    <br><br>
+                    <a href="/exercise?year=<%= year %>&month=<%= month %>&day=<%= day %>" class="add-workout-btn">
+                        + Add Your First Workout
+                    </a>
                 </div>
             <% } %>
         </div>

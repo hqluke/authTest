@@ -34,6 +34,7 @@
                 let monthUpper = 0;
                 let monthLower = 0;
                 let monthRuns = 0;
+                let totalDays = 0;
                 
                 for (let i = 0; i < firstDay; i++) { 
                 %>
@@ -44,6 +45,7 @@
                 for (let day = 1; day <= daysInMonth; day++) {
                     const workout = workoutMap[day];
                     if (workout) {
+                        totalDays++;
                         if (workout.has_upper) monthUpper++;
                         if (workout.has_lower) monthLower++;
                         if (workout.has_run) monthRuns++;
@@ -67,11 +69,25 @@
                 <% } } %>
             </div>
             
-            <div class="month-summary">
-                <h3>Month Summary</h3>
-                <p>💪 Upper Body: <strong><%= monthUpper %></strong> days</p>
-                <p>🦵 Lower Body: <strong><%= monthLower %></strong> days</p>
-                <p>🏃 Runs: <strong><%= monthRuns %></strong> days</p>
+            <div class="total-stats">
+                <h2>Month Summary</h2>
+                <div class="month-summary-total">
+                    <div class="total-days-large"><%= totalDays %> workout days</div>
+                </div>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-label">💪 Upper Body</div>
+                        <div class="stat-value"><%= monthUpper %></div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">🦵 Lower Body</div>
+                        <div class="stat-value"><%= monthLower %></div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">🏃 Runs</div>
+                        <div class="stat-value"><%= monthRuns %></div>
+                    </div>
+                </div>
             </div>
         </div>
     </body>

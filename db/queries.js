@@ -50,7 +50,14 @@ const getSets = async () => {
     return sets.rows;
 };
 
-const insertData = async (userId, exerciseId, weight, reps, sets, date = null) => {
+const insertData = async (
+    userId,
+    exerciseId,
+    weight,
+    reps,
+    sets,
+    date = null,
+) => {
     const dateToUse = date || new Date().toISOString().split("T")[0];
 
     const result = await pool.query(
@@ -94,7 +101,10 @@ const getCalendarByYear = async (userId, year = new Date().getFullYear()) => {
     return calendar.rows;
 };
 
-const getMonthlyWorkoutCounts = async (userId, year = new Date().getFullYear()) => {
+const getMonthlyWorkoutCounts = async (
+    userId,
+    year = new Date().getFullYear(),
+) => {
     const monthlyCounts = await pool.query(
         `WITH all_workout_dates AS (
             SELECT DISTINCT 
@@ -136,7 +146,7 @@ const getMonthlyWorkoutCounts = async (userId, year = new Date().getFullYear()) 
         FROM all_workout_dates awd
         GROUP BY month
         ORDER BY month`,
-        [userId, year]
+        [userId, year],
     );
     return monthlyCounts.rows;
 };
@@ -161,7 +171,7 @@ const getWorkoutsByDate = async (userId, date) => {
         JOIN weights w ON c.weight_id = w.id
         WHERE c.user_id = $1 AND c.date = $2
         ORDER BY c.id`,
-        [userId, date]
+        [userId, date],
     );
     return workouts.rows;
 };
@@ -203,12 +213,13 @@ const getMonthlyWorkoutBreakdown = async (userId, year, month) => {
 const getRunsByDate = async (userId, date) => {
     const runs = await pool.query(
         `SELECT 
+            id,
             date, 
             TO_CHAR(duration, 'HH24:MI:SS') as duration,
             distance
         FROM run
         WHERE user_id = $1 AND date = $2`,
-        [userId, date]
+        [userId, date],
     );
     return runs.rows;
 };
@@ -221,7 +232,7 @@ const getExerciseDataByDateAndExercise = async (userId, date, exerciseId) => {
         JOIN weights w ON c.weight_id = w.id
         WHERE c.user_id = $1 AND c.date = $2 AND c.exercise_id = $3
         ORDER BY c.id`,
-        [userId, date, exerciseId]
+        [userId, date, exerciseId],
     );
     return data.rows;
 };
@@ -232,16 +243,15 @@ const updateExerciseData = async (completeId, weightId, reps, sets) => {
         SET weight_id = $1, reps = $2, sets = $3
         WHERE id = $4
         RETURNING *`,
-        [weightId, reps, sets, completeId]
+        [weightId, reps, sets, completeId],
     );
     return result.rows[0];
 };
 
 const deleteExerciseData = async (completeId) => {
-    const result = await pool.query(
-        `DELETE FROM complete WHERE id = $1`,
-        [completeId]
-    );
+    const result = await pool.query(`DELETE FROM complete WHERE id = $1`, [
+        completeId,
+    ]);
     return result;
 };
 
@@ -249,9 +259,35 @@ const insertRun = async (userId, duration, distance, date = null) => {
     const dateToUse = date || new Date().toISOString().split("T")[0];
     const result = await pool.query(
         "INSERT INTO run (user_id, date, duration, distance) VALUES ($1, $2, $3, $4) RETURNING *",
-        [userId, dateToUse, duration, distance]
+        [userId, dateToUse, duration, distance],
     );
     return result.rows[0];
+};
+
+const getRunById = async (runId) => {
+    const run = await pool.query(
+        `SELECT id, user_id, date, TO_CHAR(duration, 'HH24:MI:SS') as duration, distance
+        FROM run
+        WHERE id = $1`,
+        [runId],
+    );
+    return run.rows[0];
+};
+
+const updateRun = async (runId, duration, distance) => {
+    const result = await pool.query(
+        `UPDATE run 
+        SET duration = $1, distance = $2
+        WHERE id = $3
+        RETURNING *`,
+        [duration, distance, runId],
+    );
+    return result.rows[0];
+};
+
+const deleteRun = async (runId) => {
+    const result = await pool.query(`DELETE FROM run WHERE id = $1`, [runId]);
+    return result;
 };
 
 module.exports = {
@@ -275,4 +311,7 @@ module.exports = {
     updateExerciseData,
     deleteExerciseData,
     insertRun,
+    getRunById,
+    updateRun,
+    deleteRun,
 };

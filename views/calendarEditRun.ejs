@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Edit Run</title>
+        <style>
+            html {
+                background-color: #181a1b;
+                color: white;
+            }
+            .container {
+                max-width: 600px;
+                margin: 20px auto;
+                padding: 20px;
+            }
+            h1 {
+                text-align: center;
+                color: #4caf50;
+            }
+            .date-info {
+                text-align: center;
+                color: #999;
+                margin-bottom: 30px;
+                font-size: 1.1rem;
+            }
+            .back-link {
+                display: inline-block;
+                margin-bottom: 20px;
+                color: #4caf50;
+                text-decoration: none;
+            }
+            .back-link:hover {
+                text-decoration: underline;
+            }
+            .form-container {
+                background-color: #252729;
+                padding: 30px;
+                border-radius: 8px;
+                border: 2px solid #3f4142;
+            }
+            .form-group {
+                margin-bottom: 25px;
+            }
+            .form-group label {
+                display: block;
+                font-size: 1.2rem;
+                margin-bottom: 10px;
+                color: #4caf50;
+            }
+            .form-group input {
+                width: 100%;
+                height: 50px;
+                padding: 10px;
+                font-size: 1.2rem;
+                background-color: #3f4142;
+                color: white;
+                border: 2px solid #555;
+                border-radius: 8px;
+                box-sizing: border-box;
+            }
+            .form-group input:focus {
+                outline: none;
+                border-color: #4caf50;
+            }
+            .form-group small {
+                display: block;
+                margin-top: 8px;
+                color: #999;
+                font-size: 0.9rem;
+            }
+            .button-group {
+                display: flex;
+                gap: 15px;
+                justify-content: center;
+                margin-top: 30px;
+            }
+            button {
+                padding: 15px 40px;
+                border: none;
+                border-radius: 10px;
+                font-size: 1.1rem;
+                cursor: pointer;
+                transition: all 0.3s;
+                font-weight: bold;
+            }
+            .btn-save {
+                background-color: #4caf50;
+                color: white;
+            }
+            .btn-save:hover {
+                background-color: #45a049;
+            }
+            .btn-delete {
+                background-color: #f44336;
+                color: white;
+            }
+            .btn-delete:hover {
+                background-color: #da190b;
+            }
+            .btn-cancel {
+                background-color: #3f4142;
+                color: white;
+            }
+            .btn-cancel:hover {
+                background-color: #4f5254;
+            }
+            input[type=number]::-webkit-inner-spin-button,
+            input[type=number]::-webkit-outer-spin-button {
+                -webkit-appearance: none;
+                margin: 0;
+            }
+            input[type=number] {
+                -moz-appearance: textfield;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <a href="/calendar?year=<%= year %>&month=<%= month %>&day=<%= day %>" class="back-link">
+                ← Back to Day View
+            </a>
+            
+            <h1>Edit Run</h1>
+            <p class="date-info"><%= month %>/<%= day %>/<%= year %></p>
+            
+            <form action="/calendar/edit-run" method="POST" class="form-container">
+                <input type="hidden" name="runId" value="<%= run.id %>">
+                <input type="hidden" name="year" value="<%= year %>">
+                <input type="hidden" name="month" value="<%= month %>">
+                <input type="hidden" name="day" value="<%= day %>">
+                
+                <div class="form-group">
+                    <label for="duration">Duration (HH:MM:SS)</label>
+                    <input 
+                        type="text" 
+                        id="duration" 
+                        name="duration" 
+                        value="<%= run.duration %>"
+                        pattern="[0-9]{1,2}:[0-9]{2}:[0-9]{2}"
+                        title="Format: HH:MM:SS (e.g., 00:15:30)"
+                        required
+                    />
+                    <small>Format: HH:MM:SS (e.g., 00:15:30 for 15 minutes 30 seconds)</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="distance">Distance (miles)</label>
+                    <input 
+                        type="number" 
+                        id="distance" 
+                        name="distance" 
+                        value="<%= run.distance %>"
+                        step="0.01"
+                        min="0.01"
+                        max="999.99"
+                        required
+                    />
+                    <small>Enter distance in miles (e.g., 3.50)</small>
+                </div>
+
+                <div class="button-group">
+                    <button type="submit" class="btn-save">Save Changes</button>
+                    <button type="button" class="btn-delete" onclick="deleteRun()">Delete</button>
+                    <a href="/calendar?year=<%= year %>&month=<%= month %>&day=<%= day %>">
+                        <button type="button" class="btn-cancel">Cancel</button>
+                    </a>
+                </div>
+            </form>
+        </div>
+
+        <script>
+            const durationInput = document.getElementById('duration');
+            
+            durationInput.addEventListener('input', function(e) {
+                let value = e.target.value.replace(/[^0-9]/g, '');
+                
+                if (value.length >= 2) {
+                    value = value.slice(0, 2) + ':' + value.slice(2);
+                }
+                if (value.length >= 5) {
+                    value = value.slice(0, 5) + ':' + value.slice(5);
+                }
+                if (value.length > 8) {
+                    value = value.slice(0, 8);
+                }
+                
+                e.target.value = value;
+            });
+
+            document.querySelector('form').addEventListener('submit', function(e) {
+                const duration = durationInput.value;
+                const distance = document.getElementById('distance').value;
+                
+                const durationRegex = /^[0-9]{1,2}:[0-9]{2}:[0-9]{2}$/;
+                if (!durationRegex.test(duration)) {
+                    e.preventDefault();
+                    alert('Please enter duration in HH:MM:SS format (e.g., 00:15:30)');
+                    return;
+                }
+                
+                const parts = duration.split(':');
+                const hours = parseInt(parts[0]);
+                const minutes = parseInt(parts[1]);
+                const seconds = parseInt(parts[2]);
+                
+                if (minutes >= 60 || seconds >= 60) {
+                    e.preventDefault();
+                    alert('Minutes and seconds must be less than 60');
+                    return;
+                }
+                
+                if (hours === 0 && minutes === 0 && seconds === 0) {
+                    e.preventDefault();
+                    alert('Duration must be greater than 0');
+                    return;
+                }
+                
+                const dist = parseFloat(distance);
+                if (dist <= 0 || dist > 999.99) {
+                    e.preventDefault();
+                    alert('Please enter a valid distance between 0.01 and 999.99 miles');
+                    return;
+                }
+            });
+
+            function deleteRun() {
+                if (confirm('Are you sure you want to delete this run?')) {
+                    const form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = '/calendar/delete-run';
+                    
+                    const runIdInput = document.createElement('input');
+                    runIdInput.type = 'hidden';
+                    runIdInput.name = 'runId';
+                    runIdInput.value = '<%= run.id %>';
+                    
+                    const yearInput = document.createElement('input');
+                    yearInput.type = 'hidden';
+                    yearInput.name = 'year';
+                    yearInput.value = '<%= year %>';
+                    
+                    const monthInput = document.createElement('input');
+                    monthInput.type = 'hidden';
+                    monthInput.name = 'month';
+                    monthInput.value = '<%= month %>';
+                    
+                    const dayInput = document.createElement('input');
+                    dayInput.type = 'hidden';
+                    dayInput.name = 'day';
+                    dayInput.value = '<%= day %>';
+                    
+                    form.appendChild(runIdInput);
+                    form.appendChild(yearInput);
+                    form.appendChild(monthInput);
+                    form.appendChild(dayInput);
+                    
+                    document.body.appendChild(form);
+                    form.submit();
+                }
+            }
+        </script>
+    </body>
+</html>

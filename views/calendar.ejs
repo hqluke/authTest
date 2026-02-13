@@ -5,7 +5,15 @@
         <link rel="stylesheet" href="/calendarYear.css" />
     </head>
     <body>
-        <h1>Workout Calendar - <%= year %></h1>
+        <div class="header-controls">
+            <a href="/" class="back-button">← Back to Home</a>
+            <div class="year-navigation">
+                <a href="/calendar?year=<%= parseInt(year) - 1 %>" class="year-arrow">◄</a>
+                <h1>Workout Calendar - <%= year %></h1>
+                <a href="/calendar?year=<%= parseInt(year) + 1 %>" class="year-arrow">►</a>
+            </div>
+        </div>
+        
         <div class="month-grid">
             <% 
             let totalUpper = 0;
@@ -34,7 +42,6 @@
             for (let i = 1; i <= 12; i++) {
                 const data = countMap[i] || { total_days: 0, upper_days: 0, lower_days: 0, run_days: 0 };
                 
-                // Calculate this month's total unique workout days
                 const monthTotalDays = data.total_days;
                 
                 totalUpper += data.upper_days;
@@ -44,18 +51,24 @@
             %>
                 <a href="/calendar?year=<%= year %>&month=<%= i %>" style="text-decoration: none; color: inherit">
                     <div class="month-card">
-                        <div class="month-name"><%= monthNames[i-1] %> (<%= monthTotalDays %> days)</div>
+                        <div class="month-name"><%= monthNames[i-1] %></div>
+                        <div class="workout-count"><%= monthTotalDays %></div>
+                        <div class="workout-label">total days</div>
                         <div class="workout-breakdown">
-                            <div><%= data.upper_days %> Upper</div>
-                            <div><%= data.lower_days %> Lower</div>
-                            <div><%= data.run_days %> Runs</div>
+                            <div><%= data.upper_days %> upper</div>
+                            <div><%= data.lower_days %> lower</div>
+                            <div><%= data.run_days %> runs</div>
                         </div>
                     </div>
                 </a>
             <% } %>
         </div>
+        
         <div class="total-stats">
-            <h2>Year Totals (<%= totalNumDays %> days)</h2>
+            <h2>Year Totals</h2>
+            <div class="year-summary">
+                <div class="total-days-large"><%= totalNumDays %> workout days</div>
+            </div>
             <div class="stats-grid">
                 <div class="stat-card">
                     <div class="stat-label">💪 Upper Body</div>
