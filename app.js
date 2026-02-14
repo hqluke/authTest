@@ -1,13 +1,16 @@
 const path = require("node:path");
 const express = require("express");
 const session = require("express-session");
-const pgSession = require("connect-pg-simple")(session); // Add this
+const pgSession = require("connect-pg-simple")(session);
 const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
 const dotenv = require("dotenv");
 dotenv.config();
 const bcrypt = require("bcryptjs");
 const pool = require("./db/pool");
+const rateLimit = require("express-rate-limit");
+const helmet = require("helmet");
+
 const app = express();
 
 app.set("views", path.join(__dirname, "views"));
@@ -15,28 +18,59 @@ app.set("view engine", "ejs");
 
 app.use(express.static(path.join(__dirname, "style")));
 
+// General rate limiter for all routes
+const generalLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 100, // Limit each IP to 100 requests per windowMs
+    message: "Too many requests from this IP, please try again later.",
+    standardHeaders: true,
+    legacyHeaders: false,
+});
+
+// Stricter rate limiter for authentication routes
+const authLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 5, // Limit each IP to 5 login attempts per windowMs
+    message: "Too many login attempts, please try again after 15 minutes.",
+    skipSuccessfulRequests: true, // Don't count successful logins
+});
+
+// Apply rate limiting
+app.use(generalLimiter);
+
+app.use(
+    helmet({
+        contentSecurityPolicy: {
+            directives: {
+                defaultSrc: ["'self'"],
+                styleSrc: ["'self'", "'unsafe-inline'"],
+                scriptSrc: ["'self'", "'unsafe-inline'"],
+            },
+        },
+    }),
+);
+
 app.use(
     session({
-        // Stores the session in the db in the table user_sessions.
-        // pool defines the db connection.
         store: new pgSession({
             pool: pool,
             tableName: "user_sessions",
         }),
-        // The secret is used to sign the cookie.
-        // Its a long random string that is stored in the .env file.
         secret: process.env.COOKIE_SECRET,
         resave: false,
         saveUninitialized: false,
-        cookie: { maxAge: 30 * 24 * 60 * 60 * 1000 }, // 30 days
+        cookie: {
+            maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
+            httpOnly: true, // Add this for security
+            secure: process.env.NODE_ENV === "production", // HTTPS only in production
+            sameSite: "lax", // CSRF protection
+        },
     }),
 );
-// Uses the above defined session so passport can access it in the operations below.
+
 app.use(passport.session());
 app.use(express.urlencoded({ extended: false }));
 
-//can access req.currentUser everywhere
-// has to be after passport.session() is defined
 app.use((req, res, next) => {
     res.locals.currentUser = req.user;
     next();
@@ -45,11 +79,33 @@ app.use((req, res, next) => {
 app.get("/", (req, res) => {
     res.render("index");
 });
+
 app.get("/sign-up", (req, res) => res.render("sign-up-form"));
 
-app.post("/sign-up", async (req, res, next) => {
+// Apply strict rate limiting to sign-up
+app.post("/sign-up", authLimiter, async (req, res, next) => {
     try {
-        // Hashes the password before inserting it into the db
+        // Add validation
+        if (!req.body.username || !req.body.password) {
+            return res.status(400).send("Username and password are required");
+        }
+
+        if (req.body.password.length < 8) {
+            return res
+                .status(400)
+                .send("Password must be at least 8 characters");
+        }
+
+        // Check if username already exists
+        const existingUser = await pool.query(
+            "SELECT id FROM users WHERE name = $1",
+            [req.body.username],
+        );
+
+        if (existingUser.rows.length > 0) {
+            return res.status(400).send("Username already exists");
+        }
+
         const hashedPassword = await bcrypt.hash(req.body.password, 10);
         await pool.query("INSERT INTO users (name, password) VALUES ($1, $2)", [
             req.body.username,
@@ -68,9 +124,10 @@ app.use("/exercise", exerciseRouter);
 const calendarRouter = require("./routes/calendarRouter");
 app.use("/calendar", calendarRouter);
 
+// Apply strict rate limiting to login
 app.post(
     "/log-in",
-    // Calls passport.use to authenticate the user
+    authLimiter, // Add rate limiting here
     passport.authenticate("local", {
         successRedirect: "/exercise",
         failureRedirect: "/",
@@ -86,8 +143,6 @@ app.get("/log-out", (req, res, next) => {
     });
 });
 
-// Looks if the user exists in the db and if so, compares the password.
-// If the password matches, the user is logged in and the user is returned as req.user
 passport.use(
     new LocalStrategy(async (username, password, done) => {
         try {
@@ -111,7 +166,6 @@ passport.use(
             }
 
             console.log("Login successful for user:", user.id);
-            console.log(user);
             return done(null, user);
         } catch (err) {
             console.error("Login error:", err);
@@ -120,27 +174,23 @@ passport.use(
     }),
 );
 
-// Stores the user id as a session in the db and in the cookie.
-// So when the user logs in, the userID is sent to the server and the server looks up the user in the db.
 passport.serializeUser((user, done) => {
     done(null, user.id);
 });
 
-// Reads the session cookie and looks up the userID in the db. If found, returns the user as req.user
 passport.deserializeUser(async (id, done) => {
     try {
         const { rows } = await pool.query("SELECT * FROM users WHERE id = $1", [
             id,
         ]);
         const user = rows[0];
-
         done(null, user);
     } catch (err) {
         done(err);
     }
 });
 
-app.listen(3000, (error) => {
+app.listen(process.env.PORT || 3000, (error) => {
     if (error) {
         throw error;
     }

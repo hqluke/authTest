@@ -20,7 +20,7 @@ const getWeightIdFromWeight = async (weight) => {
 
 const getUperBodyExercises = async () => {
     const upperBodyExercises = await pool.query(
-        "SELECT * FROM exercise WHERE isupperbody = true",
+        "SELECT * FROM exercise WHERE isupperbody = true ordery by name",
     );
     return upperBodyExercises.rows;
 };
