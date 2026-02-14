@@ -2,6 +2,7 @@
 <html>
     <head>
         <title>Workout Details - <%= month %>/<%= day %>/<%= year %></title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <link rel="stylesheet" href="/calendarDay.css" />
     </head>
     <body>
@@ -15,7 +16,7 @@
                 </a>
             </div>
             
-            <h1>Workout Details - <%= month %>/<%= day %>/<%= year %></h1>
+            <h1>Workout Details <%= month %>/<%= day %>/<%= year %></h1>
             
             <% if (runs && runs.length > 0) { %>
                 <div class="section-title">🏃 Running</div>
@@ -74,16 +75,16 @@
                     </thead>
                     <tbody>
                         <% upperGrouped.forEach(function(group) { 
-                            const firstItem = group.items[0];
+                            const actualSets = group.items.length; // Calculate actual sets
                         %>
                         <tr>
                             <td>
-                                <a href="/calendar/edit?year=<%= year %>&month=<%= month %>&day=<%= day %>&exerciseId=<%= firstItem.exercise_id %>" 
+                                <a href="/calendar/edit?year=<%= year %>&month=<%= month %>&day=<%= day %>&exerciseId=<%= group.items[0].exercise_id %>" 
                                    class="exercise-link">
                                     <%= group.name %>
                                 </a>
                             </td>
-                            <td><%= firstItem.sets %></td>
+                            <td><%= actualSets %></td>
                             <td>
                                 <div class="set-row">
                                     <% group.items.forEach(item => { %>
@@ -112,16 +113,16 @@
                     </thead>
                     <tbody>
                         <% lowerGrouped.forEach(function(group) { 
-                            const firstItem = group.items[0];
+                            const actualSets = group.items.length; // Calculate actual sets
                         %>
                         <tr>
                             <td>
-                                <a href="/calendar/edit?year=<%= year %>&month=<%= month %>&day=<%= day %>&exerciseId=<%= firstItem.exercise_id %>" 
+                                <a href="/calendar/edit?year=<%= year %>&month=<%= month %>&day=<%= day %>&exerciseId=<%= group.items[0].exercise_id %>" 
                                    class="exercise-link">
                                     <%= group.name %>
                                 </a>
                             </td>
-                            <td><%= firstItem.sets %></td>
+                            <td><%= actualSets %></td>
                             <td>
                                 <div class="set-row">
                                     <% group.items.forEach(item => { %>

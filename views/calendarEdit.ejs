@@ -2,6 +2,7 @@
 <html>
     <head>
         <title>Edit Exercise - <%= exerciseData[0].name %></title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <link rel="stylesheet" href="/calendarEdit.css" />
     </head>
     <body>
@@ -23,15 +24,7 @@
                         <label>Set <%= index + 1 %></label>
                         
                         <input type="hidden" name="id-<%= set.id %>" value="<%= set.id %>">
-                        
-                        <div class="form-group">
-                            <label>Sets</label>
-                            <select name="sets-<%= set.id %>">
-                                <% for(let i = 1; i <= 10; i++) { %>
-                                    <option value="<%= i %>" <%= set.sets == i ? 'selected' : '' %>><%= i %></option>
-                                <% } %>
-                            </select>
-                        </div>
+                        <input type="hidden" name="sets-<%= set.id %>" value="<%= set.sets %>">
                         
                         <div class="form-group">
                             <label>Reps</label>

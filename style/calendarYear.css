@@ -136,3 +136,20 @@ h2 {
     font-weight: bold;
     color: #4caf50;
 }
+
+@media (max-width: 768px) {
+    .month-grid {
+        gap: 4px;
+    }
+
+    .year-navigation {
+        padding-top: 30px;
+    }
+
+    .year-navigation h1 {
+        font-size: 30px;
+        text-align: center;
+        margin-top: 20px;
+        font-weight: bold;
+    }
+}
