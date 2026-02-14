@@ -1,0 +1,217 @@
+html {
+    background-color: #181a1b;
+    color: white;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+}
+
+.container {
+    max-width: 500px;
+    width: 100%;
+    padding: 20px;
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.header h1 {
+    font-size: 48px;
+    margin: 0;
+    color: #4caf50;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.tagline {
+    font-size: 18px;
+    color: #999;
+    margin-top: 10px;
+}
+
+/* Welcome Section (for logged-in users) */
+.welcome-section {
+    background-color: #252729;
+    padding: 40px;
+    border-radius: 10px;
+    border: 2px solid #3f4142;
+    text-align: center;
+}
+
+.welcome-section h2 {
+    color: #4caf50;
+    margin-top: 0;
+    margin-bottom: 30px;
+    font-size: 28px;
+}
+
+.button-group {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* Login Section */
+.login-section {
+    background-color: #252729;
+    padding: 40px;
+    border-radius: 10px;
+    border: 2px solid #3f4142;
+}
+
+.login-section h2 {
+    text-align: center;
+    color: #4caf50;
+    margin-top: 0;
+    margin-bottom: 30px;
+    font-size: 28px;
+}
+
+.login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-group label {
+    color: #ccc;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.form-group input {
+    height: 50px;
+    padding: 12px;
+    font-size: 16px;
+    background-color: #3f4142;
+    color: white;
+    border: 2px solid #555;
+    border-radius: 8px;
+    transition: border-color 0.3s;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: #4caf50;
+}
+
+.form-group input::placeholder {
+    color: #777;
+}
+
+/* Buttons */
+button {
+    height: 60px;
+    border: none;
+    border-radius: 10px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s;
+    width: 100%;
+}
+
+.btn-primary {
+    background-color: #4caf50;
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #45a049;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3);
+}
+
+.btn-secondary {
+    background-color: #2196F3;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background-color: #0b7dda;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(33, 150, 243, 0.3);
+}
+
+.btn-login {
+    background-color: #4caf50;
+    color: white;
+    margin-top: 10px;
+}
+
+.btn-login:hover {
+    background-color: #45a049;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3);
+}
+
+.btn-logout {
+    background-color: #f44336;
+    color: white;
+}
+
+.btn-logout:hover {
+    background-color: #da190b;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(244, 67, 54, 0.3);
+}
+
+.btn-signup {
+    background-color: #3f4142;
+    color: #e5e5e5;
+}
+
+.btn-signup:hover {
+    background-color: #4f5254;
+    transform: translateY(-2px);
+}
+
+/* Signup Link */
+.signup-link {
+    margin-top: 30px;
+    text-align: center;
+    padding-top: 20px;
+    border-top: 1px solid #3f4142;
+}
+
+.signup-link p {
+    color: #999;
+    margin-bottom: 15px;
+    font-size: 14px;
+}
+
+a {
+    text-decoration: none;
+    display: block;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    .container {
+        padding: 10px;
+    }
+    
+    .login-section,
+    .welcome-section {
+        padding: 30px 20px;
+    }
+    
+    .header h1 {
+        font-size: 36px;
+    }
+}

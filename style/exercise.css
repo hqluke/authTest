@@ -1,87 +1,162 @@
 html {
     background-color: #181a1b;
     color: white;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-}
-
-.exercisePContainer button {
-    background-color: #3f4142;
-    width: 300px;
-    height: 50px;
-    border-radius: 10px;
-    border: none;
-    color: #e5e5e5;
-    font-size: 20px;
-}
-
-.exercisePContainer {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-}
-
-.exerciseP {
-    display: flex;
-}
-
-.button-container button {
-    background-color: #3f4142;
-    width: 300px;
-    height: 80px;
-    border-radius: 10px;
-    border: none;
-    color: #e5e5e5;
-    font-size: 20px;
+    margin: 0;
+    padding: 0;
 }
 
 body {
-    height: 100vh;
+    min-height: 80vh;
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
+    margin: 0;
+    padding: 20px;
+}
+
+.container {
+    max-width: 500px;
+    width: 100%;
+}
+
+.eHeader {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.eHeader h1 {
+    font-size: 36px;
+    color: #4caf50;
+    margin: 0 0 8px 0;
+}
+
+.date-subtitle {
+    font-size: 16px;
+    color: #999;
+    margin: 0;
 }
 
 .button-container {
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 2rem;
+    gap: 15px;
+    margin-bottom: 30px;
 }
 
-.eHeader {
-    margin-top: 2rem;
-    text-align: center;
-    font-size: 2rem;
-    color: #4caf50;
+.exercise-button {
+    background-color: #252729;
+    border: 2px solid #3f4142;
+    min-height: 80px;
+    border-radius: 10px;
+    color: white;
+    font-size: 22px;
     font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    width: 100%;
+    padding: 15px;
+}
+
+.exercise-button .emoji {
+    font-size: 32px;
+}
+
+.exercise-button .button-text {
+    font-size: 22px;
+}
+
+.upper-button:hover,
+.upper-button:active,
+.lower-button:hover,
+.lower-button:active {
+    background-color: #2f3133;
+    border-color: #4caf50;
+    transform: scale(1.02);
+    box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3);
+}
+
+.run-button:hover,
+.run-button:active {
+    background-color: #2f3133;
+    border-color: #2196f3;
+    transform: scale(1.02);
+    box-shadow: 0 4px 8px rgba(33, 150, 243, 0.3);
 }
 
 .bottom-buttons {
-    margin-top: 2rem;
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 2rem;
+    flex-direction: column;
+    gap: 12px;
 }
 
 .bottom-buttons button {
     background-color: #3f4142;
-    width: 132px;
-    height: 80px;
+    height: 55px;
+    width: 100%;
     border-radius: 10px;
     border: none;
     color: #e5e5e5;
-    font-size: 18px;
+    font-size: 17px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
 }
 
-.exercise-button:hover,
-.logout-button:hover,
 .back-button:hover,
-.exercisePContainer button:hover{
-    background-color: #0b7dda;
+.back-button:active {
+    background-color: #4f5254;
+    transform: scale(1.02);
+}
+
+.logout-button:hover,
+.logout-button:active {
+    background-color: #f44336;
+    transform: scale(1.02);
+    box-shadow: 0 4px 8px rgba(244, 67, 54, 0.3);
+}
+
+a {
+    text-decoration: none;
+}
+
+@media (min-width: 768px) {
+    .container {
+        max-width: 600px;
+    }
+
+    .eHeader h1 {
+        font-size: 48px;
+    }
+
+    .date-subtitle {
+        font-size: 20px;
+    }
+
+    .exercise-button {
+        min-height: 100px;
+    }
+
+    .exercise-button .emoji {
+        font-size: 36px;
+    }
+
+    .exercise-button .button-text {
+        font-size: 28px;
+    }
+
+    .bottom-buttons {
+        flex-direction: row;
+        justify-content: center;
+        gap: 20px;
+    }
+
+    .bottom-buttons button {
+        min-width: 180px;
+        width: auto;
+    }
 }

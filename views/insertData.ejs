@@ -1,71 +1,67 @@
 <html lang="en">
     <head>
         <meta charset="UTF-8" />
-        <title>Insert Data</title>
+        <title>Log <%= exercise.name %></title>
         <link rel="stylesheet" href="/insertData.css" />
     </head>
     <body>
-        <h1><%= exercise.name %></h1>
-        <% if (year && month && day) { %>
-            <p style="text-align: center; color: #4caf50; font-size: 1.2rem;">
-                Date: <%= month %>/<%= day %>/<%= year %>
-            </p>
-        <% } %>
-        <form action="/exercise/insertData" method="POST">
-            <input type="hidden" name="exerciseId" value="<%= exercise.id %>" />
-            <input type="hidden" name="isUpperBody" value="<%= exercise.isupperbody %>" />
-            <% if (year && month && day) { %>
-                <input type="hidden" name="year" value="<%= year %>" />
-                <input type="hidden" name="month" value="<%= month %>" />
-                <input type="hidden" name="day" value="<%= day %>" />
-            <% } %>
-            
-            <!-- rest of your form stays the same -->
-            <div class="iContainer">
-                <div class="isets">
-                    <label for="select-sets">Sets</label>
-                    <select name="sets" id="select-sets">
-                        <%sets.forEach(set => {%>
-                        <option value="<%=set.sets%>"><%=set.sets%></option>
-                        <%})%>
-                    </select>
-                </div>
-                <div class="iweightsandreps">
-                    <div class="iweight">
-                        <label for="select-weight">Weight</label>
-                        <select name="weight" id="select-weight">
-                            <%weights.forEach(weight => {%>
-                            <option value="<%=weight.weight%>">
-                                <%=weight.weight%>
-                            </option>
-                            <%})%>
-                        </select>
-                    </div>
-                    <div class="ireps">
-                        <label for="select-reps">Reps</label>
-                        <select name="reps" id="select-reps">
-                            <%reps.forEach(rep => {%>
-                            <option value="<%=rep.reps%>"><%=rep.reps%></option>
-                            <%})%>
-                        </select>
-                    </div>
-                </div>
+        <div class="container">
+            <div class="header">
+                <h1><%= exercise.name %></h1>
+                <% if (year && month && day) { %>
+                    <p class="date-info"><%= month %>/<%= day %>/<%= year %></p>
+                <% } %>
             </div>
-            <button type="submit">Insert Data</button>
-        </form>
+            
+            <form action="/exercise/insertData" method="POST">
+                <input type="hidden" name="exerciseId" value="<%= exercise.id %>" />
+                <input type="hidden" name="isUpperBody" value="<%= exercise.isupperbody %>" />
+                <% if (year && month && day) { %>
+                    <input type="hidden" name="year" value="<%= year %>" />
+                    <input type="hidden" name="month" value="<%= month %>" />
+                    <input type="hidden" name="day" value="<%= day %>" />
+                <% } %>
+                
+                <div class="form-card">
+                    <div class="isets">
+                        <label for="select-sets">Sets</label>
+                        <select name="sets" id="select-sets">
+                            <%sets.forEach(set => {%>
+                            <option value="<%=set.sets%>"><%=set.sets%></option>
+                            <%})%>
+                        </select>
+                    </div>
+                    
+                    <div class="iweightsandreps">
+                        <div class="iweight">
+                            <label for="select-weight">Weight</label>
+                            <select name="weight" id="select-weight">
+                                <%weights.forEach(weight => {%>
+                                <option value="<%=weight.weight%>">
+                                    <%=weight.weight%>
+                                </option>
+                                <%})%>
+                            </select>
+                        </div>
+                        <div class="ireps">
+                            <label for="select-reps">Reps</label>
+                            <select name="reps" id="select-reps">
+                                <%reps.forEach(rep => {%>
+                                <option value="<%=rep.reps%>"><%=rep.reps%></option>
+                                <%})%>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn-submit">Save Workout</button>
+            </form>
+        </div>
 
         <script>
-
-            //converts the reps data to json so it can be used in the js
-                const repsData = <%- JSON.stringify(reps) %>;
-                // console.log(repsData);
-
-                const weightData = <%- JSON.stringify(weights) %>;
-                // console.log(weightData);
-
+            const repsData = <%- JSON.stringify(reps) %>;
+            const weightData = <%- JSON.stringify(weights) %>;
             const lastData = <%- JSON.stringify(lastData) %>;
-            console.log(lastData);
-
 
             let select = document.getElementById("select-sets");
 
@@ -78,7 +74,6 @@
             const weightDiv = document.querySelector(".iweight");
 
             window.addEventListener("load", () => {
-
                 if (lastData[0]?.sets) {
                     select.value = lastData[0].sets;
                     displayNumSets(true);
@@ -87,8 +82,6 @@
             });
 
             function displayNumWeight(firstTime){
-
-                console.log("calling num weight");
                 while(weightDiv.firstChild){
                     weightDiv.removeChild(weightDiv.lastChild);
                 }
@@ -107,12 +100,12 @@
                     weightSelect.setAttribute("name", "weight-" + num);
                     weightSelect.setAttribute("id", "select-weight-" + num);
 
-                        weightData.forEach(weight => {
-                            const option = document.createElement("option");
-                            option.setAttribute("value", weight.weight);
-                            option.innerText = weight.weight;
-                            weightSelect.appendChild(option);
-                        });
+                    weightData.forEach(weight => {
+                        const option = document.createElement("option");
+                        option.setAttribute("value", weight.weight);
+                        option.innerText = weight.weight;
+                        weightSelect.appendChild(option);
+                    });
 
                     if (firstTime && lastData[i]?.weight !== undefined) {
                         weightSelect.value = lastData[i].weight;
@@ -126,16 +119,12 @@
                     weightDiv.appendChild(weightSelect);
                     cascadeListener("weight");
                 }
-
-
             }
 
             function displayNumSets(firstTime){
-                console.log("calling num sets");
                 while(repDiv.firstChild){
-                repDiv.removeChild(repDiv.lastChild);
+                    repDiv.removeChild(repDiv.lastChild);
                 }
-
 
                 let select = document.getElementById("select-sets");
                 let selectedSets = select.value;
@@ -151,12 +140,12 @@
                     repsSelect.setAttribute("name", "reps-" + num);
                     repsSelect.setAttribute("id", "select-reps-" + num);
 
-                        repsData.forEach(rep => {
-                            const option = document.createElement("option");
-                            option.setAttribute("value", rep.reps);
-                            option.innerText = rep.reps;
-                            repsSelect.appendChild(option);
-                        });
+                    repsData.forEach(rep => {
+                        const option = document.createElement("option");
+                        option.setAttribute("value", rep.reps);
+                        option.innerText = rep.reps;
+                        repsSelect.appendChild(option);
+                    });
 
                     if (firstTime && lastData[i]?.reps !== undefined) {
                         repsSelect.value = lastData[i].reps;

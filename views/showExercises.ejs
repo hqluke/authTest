@@ -1,26 +1,37 @@
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <title><%= exerciseType %> Exercises</title>
-        <link rel="stylesheet" href="/exercise.css" />
-    </head>
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= exerciseType %> Exercises</title>
+    <link rel="stylesheet" href="/showExercises.css" />
+</head>
+
     <body>
-        <div class="eHeader">
-            <h1><%= exerciseType %> Exercises</h1>
-        </div>
-        <div class="exercisePContainer">
-            <% exercises.forEach(exercise => { %>
-            <div class="exerciseP">
-                <a href="/exercise/insertData?exerciseId=<%= exercise.id %><%= year && month && day ? `&year=${year}&month=${month}&day=${day}` : '' %>">
-                    <button><%= exercise.name %></button>
+        <div class="container">
+            <div class="header">
+                <h1><%= exerciseType %> Exercises</h1>
+                <p class="subtitle">Select an exercise to log</p>
+            </div>
+
+            <div class="exercise-grid">
+                <% exercises.forEach(exercise => { %>
+                <a
+                    href="/exercise/insertData?exerciseId=<%= exercise.id %><%= year && month && day ? `&year=${year}&month=${month}&day=${day}` : '' %>"
+                >
+                    <button class="exercise-card">
+                        <span class="exercise-name"><%= exercise.name %></span>
+                    </button>
+                </a>
+                <% }) %>
+            </div>
+
+            <div class="bottom-nav">
+                <a
+                    href="/exercise?<%= year && month && day ? `year=${year}&month=${month}&day=${day}` : '' %>"
+                >
+                    <button class="back-button">← Back</button>
                 </a>
             </div>
-            <% }) %>
-        </div>
-        <div class="bottom-buttons">
-            <a href="/exercise?<%= year && month && day ? `year=${year}&month=${month}&day=${day}` : '' %>">
-                <button class="back-button">Back</button>
-            </a>
         </div>
     </body>
 </html>

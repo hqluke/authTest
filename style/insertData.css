@@ -1,66 +1,126 @@
 html {
     background-color: #181a1b;
     color: white;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
-}
-
-h1{
-    text-align: center;
-}
-
-.iContainer {
-    display: flex;
-    flex-direction: column;
     justify-content: center;
-    align-items: center;
-    font-size: 1.5rem;
+    padding: 15px;
+    margin: 0;
+    width: 100vw;
 }
 
-.iweightsandreps {
-    display: flex;
-    justify-content: space-around;
-    border: 4px solid #3f4142;
-    border-radius: 10px;
-    padding: 1rem 0;
+.container {
     width: 100%;
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.header h1 {
+    font-size: 32px;
+    color: #4caf50;
+    margin: 0 0 8px 0;
+}
+
+.date-info {
+    font-size: 16px;
+    color: #999;
+    margin: 0;
+}
+
+.form-card {
+    background-color: #252729;
+    border: 2px solid #3f4142;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 15px;
 }
 
 .isets {
     display: flex;
     flex-direction: column;
-    align-self: center;
-    gap: 0.1rem;
-    margin-bottom: 1rem;
-    width: 90%;
-    padding: 1rem;
-    border: 4px solid #3f4142;
-    border-radius: 10px;
+    gap: 10px;
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid #3f4142;
 }
 
 .isets label {
-    font-size: 1.5rem;
+    font-size: 18px;
+    font-weight: 600;
+    color: #4caf50;
 }
 
-.iweight {
+.iweightsandreps {
     display: flex;
-    flex-direction: column;
-    gap: 0.1rem;
-    width: 6.4rem;
+    gap: 15px;
+    justify-content: space-between;
 }
 
-select {
-    height: 2rem;
-    margin-bottom: 1rem;
-}
-
+.iweight,
 .ireps {
     display: flex;
     flex-direction: column;
-    gap: 0.1rem;
-    width: 6.4rem;
+    gap: 8px;
+    flex: 1;
+}
+
+.iweight label,
+.ireps label {
+    font-size: 15px;
+    font-weight: 600;
+    color: #ccc;
+}
+
+select {
+    height: 45px;
+    padding: 8px;
+    margin-bottom: 8px;
+    background-color: #3f4142;
+    color: white;
+    border: 2px solid #555;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: border-color 0.3s;
+}
+
+select:focus {
+    outline: none;
+    border-color: #4caf50;
+}
+
+select:hover {
+    border-color: #666;
+}
+
+.btn-submit {
+    background-color: #4caf50;
+    color: white;
+    width: 100%;
+    height: 60px;
+    border-radius: 10px;
+    border: none;
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.btn-submit:hover,
+.btn-submit:active {
+    background-color: #45a049;
+    transform: scale(1.02);
+    box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3);
 }
 
 form {
@@ -68,13 +128,33 @@ form {
     flex-direction: column;
 }
 
-form button {
-    background-color: #3f4142;
-    width: 300px;
-    height: 50px;
-    border-radius: 10px;
-    border: none;
-    color: #e5e5e5;
-    font-size: 20px;
-    margin-top: 1rem;
+@media (min-width: 768px) {
+    body {
+        padding: 20px;
+    }
+
+    .container {
+        max-width: 600px;
+    }
+
+    .header h1 {
+        font-size: 42px;
+    }
+
+    .date-info {
+        font-size: 18px;
+    }
+
+    .form-card {
+        padding: 30px;
+    }
+
+    .isets label {
+        font-size: 20px;
+    }
+
+    .iweight label,
+    .ireps label {
+        font-size: 16px;
+    }
 }
