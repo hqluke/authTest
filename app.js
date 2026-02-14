@@ -190,9 +190,11 @@ passport.deserializeUser(async (id, done) => {
     }
 });
 
-app.listen(process.env.PORT || 3000, (error) => {
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, (error) => {
     if (error) {
         throw error;
     }
-    console.log("app listening on port 3000!");
+    console.log(`app listening on port ${PORT}!`);
 });
