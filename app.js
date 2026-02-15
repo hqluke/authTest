@@ -191,6 +191,14 @@ passport.deserializeUser(async (id, done) => {
     }
 });
 
+app.use((err, req, res, next) => {
+    console.error('Error occurred:');
+    console.error('User:', req.user?.id);
+    console.error('Path:', req.path);
+    console.error('Error:', err);
+    res.status(500).send('Internal Server Error - Check server logs');
+});
+
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, (error) => {
