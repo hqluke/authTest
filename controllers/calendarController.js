@@ -195,6 +195,23 @@ const deleteRunPost = async (req, res, next) => {
         next(error);
     }
 };
+
+const deleteAllSets = async (req, res, next) => {
+    try {
+        const { ids, year, month, day } = req.body;
+        const idArray = JSON.parse(ids);
+
+        // Delete all sets
+        for (const id of idArray) {
+            await db.deleteExerciseData(parseInt(id));
+        }
+
+        res.redirect(`/calendar?year=${year}&month=${month}&day=${day}`);
+    } catch (error) {
+        next(error);
+    }
+};
+
 module.exports = {
     getCalendar,
     getEditExercise,
@@ -203,4 +220,5 @@ module.exports = {
     getEditRun,
     postEditRun,
     deleteRunPost,
+    deleteAllSets,
 };

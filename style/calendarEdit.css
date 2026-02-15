@@ -133,6 +133,17 @@ button {
     color: white;
 }
 
+.btn-delete-all {
+    background-color: #ff6b6b;
+    color: white;
+}
+
+.btn-delete-all:hover,
+.btn-delete-all:active {
+    background-color: #ff5252;
+    transform: scale(1.02);
+}
+
 .btn-cancel:hover,
 .btn-cancel:active {
     background-color: #4f5254;

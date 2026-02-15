@@ -19,5 +19,6 @@ router.post("/delete", calendarController.deleteExercise);
 router.get("/edit-run", calendarController.getEditRun);
 router.post("/edit-run", calendarController.postEditRun);
 router.post("/delete-run", calendarController.deleteRunPost);
+router.post("/delete-all-sets", calendarController.deleteAllSets);
 
 module.exports = router;
