@@ -2,7 +2,9 @@ const db = require("../db/queries");
 
 const getCalendar = async (req, res, next) => {
     try {
-        const year = req.query.year || new Date().getFullYear();
+        const defaultYear =
+            req.user && req.user.id === 7 ? 2026 : new Date().getFullYear();
+        const year = req.query.year || defaultYear;
         const month = req.query.month;
         const day = req.query.day;
 

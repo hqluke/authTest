@@ -77,6 +77,35 @@ app.use((req, res, next) => {
     next();
 });
 
+app.use((req, res, next) => {
+    res.locals.currentUser = req.user;
+    res.locals.isDemoUser = req.user && req.user.id === 7;
+    next();
+});
+
+app.get("/demo", async (req, res, next) => {
+    try {
+        const { rows } = await pool.query(
+            "SELECT * FROM users WHERE id = $1",
+            [7],
+        );
+        const demoUser = rows[0];
+
+        if (!demoUser) {
+            return res.status(404).send("Demo user not found");
+        }
+
+        req.login(demoUser, (err) => {
+            if (err) {
+                return next(err);
+            }
+            res.redirect("/calendar?year=2026");
+        });
+    } catch (error) {
+        next(error);
+    }
+});
+
 app.get("/", (req, res) => {
     res.render("index");
 });
@@ -130,7 +159,7 @@ app.post(
     "/log-in",
     authLimiter, // Add rate limiting here
     passport.authenticate("local", {
-        successRedirect: "/exercise",
+        successRedirect: "/",
         failureRedirect: "/",
     }),
 );
@@ -192,11 +221,11 @@ passport.deserializeUser(async (id, done) => {
 });
 
 app.use((err, req, res, next) => {
-    console.error('Error occurred:');
-    console.error('User:', req.user?.id);
-    console.error('Path:', req.path);
-    console.error('Error:', err);
-    res.status(500).send('Internal Server Error - Check server logs');
+    console.error("Error occurred:");
+    console.error("User:", req.user?.id);
+    console.error("Path:", req.path);
+    console.error("Error:", err);
+    res.status(500).send("Internal Server Error - Check server logs");
 });
 
 const PORT = process.env.PORT || 3000;
