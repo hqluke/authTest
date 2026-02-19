@@ -120,10 +120,16 @@ button {
 .btn-delete {
     background-color: #f44336;
     color: white;
+    min-height: 50px;
+    touch-action: manipulation;
 }
 
-.btn-delete:hover,
 .btn-delete:active {
+    background-color: #da190b;
+    transform: scale(0.98);
+}
+
+.btn-delete:hover {
     background-color: #da190b;
     transform: scale(1.02);
 }
