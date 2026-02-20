@@ -200,19 +200,29 @@ const deleteRunPost = async (req, res, next) => {
 
 const deleteAllSets = async (req, res, next) => {
     try {
-        const { ids, year, month, day } = req.body;
-        const idArray = JSON.parse(ids);
-
+        const ids = req.body['ids[]'];
+        const { year, month, day } = req.body;
+        
+        if (!ids || ids.length === 0) {
+            console.error('No IDs received. req.body:', req.body);
+            return res.status(400).send(`No sets to delete`);
+        }
+        
+        console.log('Deleting IDs:', ids);
+        
         // Delete all sets
-        for (const id of idArray) {
+        for (const id of ids) {
             await db.deleteExerciseData(parseInt(id));
         }
-
+        
         res.redirect(`/calendar?year=${year}&month=${month}&day=${day}`);
     } catch (error) {
+        console.error('Error deleting all sets:', error);
         next(error);
     }
 };
+
+
 
 module.exports = {
     getCalendar,
