@@ -137,6 +137,17 @@ button {
     box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3);
 }
 
+.btn-today {
+    background-color: #FF9800;
+    color: white;
+}
+
+.btn-today:hover {
+    background-color: #F57C00;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(255, 152, 0, 0.3);
+}
+
 .btn-secondary {
     background-color: #2196F3;
     color: white;
@@ -179,6 +190,31 @@ button {
 .btn-signup:hover {
     background-color: #4f5254;
     transform: translateY(-2px);
+}
+
+.btn-demo {
+    background-color: #2196F3;
+    color: white;
+}
+
+.btn-demo:hover {
+    background-color: #0b7dda;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(33, 150, 243, 0.3);
+}
+
+/* Demo Section */
+.demo-section {
+    margin-top: 30px;
+    text-align: center;
+    padding-top: 20px;
+    border-top: 1px solid #3f4142;
+}
+
+.demo-section p {
+    color: #999;
+    margin-bottom: 15px;
+    font-size: 14px;
 }
 
 /* Signup Link */

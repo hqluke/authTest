@@ -12,13 +12,21 @@
                 <h1>Workout Tracker</h1>
                 <p class="tagline">U Mirin' Brah?</p>
             </div>
-
             <% if (currentUser) { %>
                 <div class="welcome-section">
                     <h2>Welcome back, <%= currentUser.name %>!</h2>
                     <div class="button-group">
                         <a href="/exercise">
                             <button class="btn-primary">Enter Workout</button>
+                        </a>
+                        <%
+                            const today = new Date();
+                            const year = today.getFullYear();
+                            const month = today.getMonth() + 1;
+                            const day = today.getDate();
+                        %>
+                        <a href="/calendar?year=<%= year %>&month=<%= month %>&day=<%= day %>">
+                            <button class="btn-today">View Today</button>
                         </a>
                         <a href="/calendar">
                             <button class="btn-secondary">View Calendar</button>
@@ -54,6 +62,14 @@
                         </div>
                         <button type="submit" class="btn-login">Sign In</button>
                     </form>
+                    
+                    <div class="demo-section">
+                        <p>Just want to try it out?</p>
+                        <a href="/demo">
+                            <button class="btn-demo">Try Demo Account</button>
+                        </a>
+                    </div>
+                    
                     <div class="signup-link">
                         <p>Don't have an account?</p>
                         <a href="/sign-up">
