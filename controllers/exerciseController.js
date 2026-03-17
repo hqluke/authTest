@@ -136,7 +136,12 @@ const postInsertData = async (req, res) => {
                 .toISOString()
                 .split("T")[0];
         } else {
-            dateToUse = new Date().toISOString().split("T")[0];
+            // Use local timezone date instead of UTC
+            const today = new Date();
+            const yyyy = today.getFullYear();
+            const mm = String(today.getMonth() + 1).padStart(2, "0");
+            const dd = String(today.getDate()).padStart(2, "0");
+            dateToUse = `${yyyy}-${mm}-${dd}`;
         }
 
         console.log("Date to use:", dateToUse);
@@ -248,7 +253,12 @@ const postInsertRun = async (req, res) => {
                 .toISOString()
                 .split("T")[0];
         } else {
-            dateToUse = new Date().toISOString().split("T")[0];
+            // Use local timezone date instead of UTC
+            const today = new Date();
+            const yyyy = today.getFullYear();
+            const mm = String(today.getMonth() + 1).padStart(2, "0");
+            const dd = String(today.getDate()).padStart(2, "0");
+            dateToUse = `${yyyy}-${mm}-${dd}`;
         }
 
         await db.insertRun(userId, formattedDuration, dist, dateToUse);
