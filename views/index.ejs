@@ -19,13 +19,7 @@
                         <a href="/exercise">
                             <button class="btn-primary">Enter Workout</button>
                         </a>
-                        <%
-                            const today = new Date();
-                            const year = today.getFullYear();
-                            const month = today.getMonth() + 1;
-                            const day = today.getDate();
-                        %>
-                        <a href="/calendar?year=<%= year %>&month=<%= month %>&day=<%= day %>">
+                        <a href="#" id="viewTodayBtn">
                             <button class="btn-today">View Today</button>
                         </a>
                         <a href="/calendar">
@@ -36,6 +30,18 @@
                         </a>
                     </div>
                 </div>
+                
+                <script>
+                    // Calculate today's date in user's local timezone
+                    document.getElementById('viewTodayBtn').addEventListener('click', function(e) {
+                        e.preventDefault();
+                        const today = new Date();
+                        const year = today.getFullYear();
+                        const month = today.getMonth() + 1;
+                        const day = today.getDate();
+                        window.location.href = `/calendar?year=${year}&month=${month}&day=${day}`;
+                    });
+                </script>
             <% } else { %>
                 <div class="login-section">
                     <h2>Sign In</h2>

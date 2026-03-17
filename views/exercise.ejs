@@ -16,7 +16,6 @@
                 <p class="date-subtitle">Today's Workout</p>
                 <% } %>
             </div>
-
             <div class="button-container">
                 <a
                     href="/exercise/upper?<%= year && month && day ? `year=${year}&month=${month}&day=${day}` : '' %>"
@@ -43,23 +42,41 @@
                     </button>
                 </a>
             </div>
-
             <div class="bottom-buttons">
-
                 <a href="/">
                     <button class="back-button">← Back to Home</button>
                 </a>
-
-                <a
-                    href="/calendar?year=<%= year %>&month=<%= month %>&day=<%= day %>"
-                >
-                    <button class="back-button">View Today</button>
+                <a href="/calendar?year=<%= year %>&month=<%= month %>&day=<%= day %>" id="viewDayBtn">
+                    <button class="back-button" id="viewDayBtnText">View Day</button>
                 </a>
-
                 <a href="/log-out">
                     <button class="logout-button">Log Out</button>
                 </a>
             </div>
         </div>
+        
+        <script>
+            // Get the date from the page
+            const pageYear = <%= year %>;
+            const pageMonth = <%= month %>;
+            const pageDay = <%= day %>;
+            
+            // Get today's date in user's local timezone
+            const today = new Date();
+            const todayYear = today.getFullYear();
+            const todayMonth = today.getMonth() + 1;
+            const todayDay = today.getDate();
+            
+            // Check if page date matches today
+            const isToday = (pageYear === todayYear && pageMonth === todayMonth && pageDay === todayDay);
+            
+            // Update button text
+            const btnText = document.getElementById('viewDayBtnText');
+            if (isToday) {
+                btnText.textContent = 'View Today';
+            } else {
+                btnText.textContent = `View ${pageMonth}/${pageDay}/${pageYear}`;
+            }
+        </script>
     </body>
 </html>
