@@ -2,16 +2,8 @@ const db = require("../db/queries");
 
 const getDefaultPage = async (req, res) => {
     console.log("--------------Calling exercises--------------");
-    let { year, month, day } = req.query;
-
-    // If no date params, use today's date
-    if (!year || !month || !day) {
-        const today = new Date();
-        year = today.getFullYear();
-        month = today.getMonth() + 1;
-        day = today.getDate();
-    }
-
+    
+    // Don't calculate date server-side anymore - let client handle it
     const exerciseList = await db.getExercises();
     console.log("--------Exercies found:----------");
     console.log(exerciseList);
@@ -20,13 +12,9 @@ const getDefaultPage = async (req, res) => {
     console.log("--------Weights found:----------");
     console.log(weightList);
 
-    // Pass date info to template - always have values now
     res.render("exercise", {
         exerciseList,
         weightList,
-        year,
-        month,
-        day,
     });
 };
 
