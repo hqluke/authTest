@@ -8,9 +8,14 @@
     <body>
         <div class="container">
             <div class="header-section">
-                <a href="/calendar?year=<%= year %>&month=<%= month %>" class="back-link">
-                    ← Back to Month View
-                </a>
+                <div class="div-back-links">
+                    <a href="/calendar?year=<%= year %>&month=<%= month %>" class="back-link">
+                        ← Back to Month View
+                    </a>
+                    <a href="/" class="back-link">
+                        ← Back to Home
+                    </a>
+                </div>
                 <a href="/exercise?year=<%= year %>&month=<%= month %>&day=<%= day %>" class="add-workout-btn">
                     + Add Workout
                 </a>

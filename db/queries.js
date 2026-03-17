@@ -290,6 +290,46 @@ const deleteRun = async (runId) => {
     return result;
 };
 
+const getWorkoutHistory = async (exerciseId, userId, limit = 3) => {
+    const history = await pool.query(
+        `SELECT DISTINCT ON (c.date) 
+            c.date,
+            c.sets as num_sets
+        FROM complete c
+        WHERE c.exercise_id = $1 AND c.user_id = $2
+        ORDER BY c.date ASC, c.id
+        LIMIT $3`,
+        [exerciseId, userId, limit],
+    );
+
+    if (history.rows.length === 0) {
+        return [];
+    }
+
+    // For each date, get all the sets
+    const workoutHistory = [];
+    for (const workout of history.rows) {
+        const sets = await pool.query(
+            `SELECT c.reps, w.weight
+            FROM complete c
+            JOIN weights w ON c.weight_id = w.id
+            WHERE c.exercise_id = $1 
+                AND c.user_id = $2 
+                AND c.date = $3
+            ORDER BY c.id
+            LIMIT $4`,
+            [exerciseId, userId, workout.date, workout.num_sets],
+        );
+
+        workoutHistory.push({
+            date: workout.date,
+            sets: sets.rows,
+        });
+    }
+
+    return workoutHistory;
+};
+
 module.exports = {
     getExercises,
     getWeights,
@@ -314,4 +354,5 @@ module.exports = {
     getRunById,
     updateRun,
     deleteRun,
+    getWorkoutHistory,
 };

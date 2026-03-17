@@ -9,45 +9,53 @@
         <div class="container">
             <div class="eHeader">
                 <% if (year && month && day) { %>
-                    <h1>Add Workout</h1>
-                    <p class="date-subtitle"><%= month %>/<%= day %>/<%= year %></p>
+                <h1>Add Workout</h1>
+                <p class="date-subtitle"><%= month %>/<%= day %>/<%= year %></p>
                 <% } else { %>
-                    <h1>Select Workout Type</h1>
-                    <p class="date-subtitle">Today's Workout</p>
+                <h1>Select Workout Type</h1>
+                <p class="date-subtitle">Today's Workout</p>
                 <% } %>
             </div>
-            
+
             <div class="button-container">
-                <a href="/exercise/upper?<%= year && month && day ? `year=${year}&month=${month}&day=${day}` : '' %>">
+                <a
+                    href="/exercise/upper?<%= year && month && day ? `year=${year}&month=${month}&day=${day}` : '' %>"
+                >
                     <button class="exercise-button upper-button">
                         <span class="emoji">💪</span>
                         <span class="button-text">Upper Body</span>
                     </button>
                 </a>
-                <a href="/exercise/lower?<%= year && month && day ? `year=${year}&month=${month}&day=${day}` : '' %>">
+                <a
+                    href="/exercise/lower?<%= year && month && day ? `year=${year}&month=${month}&day=${day}` : '' %>"
+                >
                     <button class="exercise-button lower-button">
                         <span class="emoji">🦵</span>
                         <span class="button-text">Lower Body</span>
                     </button>
                 </a>
-                <a href="/exercise/run?<%= year && month && day ? `year=${year}&month=${month}&day=${day}` : '' %>">
+                <a
+                    href="/exercise/run?<%= year && month && day ? `year=${year}&month=${month}&day=${day}` : '' %>"
+                >
                     <button class="exercise-button run-button">
                         <span class="emoji">🏃</span>
                         <span class="button-text">Run</span>
                     </button>
                 </a>
             </div>
-            
+
             <div class="bottom-buttons">
-                <% if (year && month && day) { %>
-                    <a href="/calendar?year=<%= year %>&month=<%= month %>">
-                        <button class="back-button">← Back to Calendar</button>
-                    </a>
-                <% } else { %>
-                    <a href="/">
-                        <button class="back-button">← Back to Home</button>
-                    </a>
-                <% } %>
+
+                <a href="/">
+                    <button class="back-button">← Back to Home</button>
+                </a>
+
+                <a
+                    href="/calendar?year=<%= year %>&month=<%= month %>&day=<%= day %>"
+                >
+                    <button class="back-button">View Today</button>
+                </a>
+
                 <a href="/log-out">
                     <button class="logout-button">Log Out</button>
                 </a>

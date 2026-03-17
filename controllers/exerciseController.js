@@ -2,7 +2,15 @@ const db = require("../db/queries");
 
 const getDefaultPage = async (req, res) => {
     console.log("--------------Calling exercises--------------");
-    const { year, month, day } = req.query;
+    let { year, month, day } = req.query;
+
+    // If no date params, use today's date
+    if (!year || !month || !day) {
+        const today = new Date();
+        year = today.getFullYear();
+        month = today.getMonth() + 1;
+        day = today.getDate();
+    }
 
     const exerciseList = await db.getExercises();
     console.log("--------Exercies found:----------");
@@ -12,13 +20,13 @@ const getDefaultPage = async (req, res) => {
     console.log("--------Weights found:----------");
     console.log(weightList);
 
-    // Pass date info to template
+    // Pass date info to template - always have values now
     res.render("exercise", {
         exerciseList,
         weightList,
-        year: year || null,
-        month: month || null,
-        day: day || null,
+        year,
+        month,
+        day,
     });
 };
 
@@ -56,7 +64,7 @@ const getLower = async (req, res) => {
 
 const getInsertDataPage = async (req, res) => {
     const exerciseId = req.query.exerciseId;
-    const { year, month, day } = req.query;
+    const { year, month, day, type } = req.query;
 
     if (!exerciseId) {
         return res
@@ -70,6 +78,7 @@ const getInsertDataPage = async (req, res) => {
     const sets = await db.getSets();
     const userId = req.user.id;
     const lastData = await db.getLastDataFromExerciseID(exerciseId, userId);
+    const workoutHistory = await db.getWorkoutHistory(exerciseId, userId, 3);
 
     res.render("insertData", {
         exercise,
@@ -77,6 +86,8 @@ const getInsertDataPage = async (req, res) => {
         reps,
         sets,
         lastData,
+        workoutHistory,
+        type: type || null, // Pass type to template
         year: year || null,
         month: month || null,
         day: day || null,
@@ -84,13 +95,14 @@ const getInsertDataPage = async (req, res) => {
 };
 
 const postInsertData = async (req, res) => {
-    const { exerciseId, sets, isUpperBody, year, month, day } = req.body;
+    const { exerciseId, sets, isUpperBody, year, month, day, type } = req.body;
     const userId = req.user.id;
 
     console.log("=== POST INSERT DATA DEBUG ===");
     console.log("User ID:", userId);
     console.log("Exercise ID:", exerciseId);
     console.log("Sets:", sets);
+    console.log("Type:", type);
     console.log("Request body:", req.body);
 
     const repsArray = Object.keys(req.body)
@@ -136,7 +148,6 @@ const postInsertData = async (req, res) => {
                 .toISOString()
                 .split("T")[0];
         } else {
-            // Use local timezone date instead of UTC
             const today = new Date();
             const yyyy = today.getFullYear();
             const mm = String(today.getMonth() + 1).padStart(2, "0");
@@ -181,8 +192,12 @@ const postInsertData = async (req, res) => {
 
         console.log("All sets inserted successfully");
 
-        // Redirect back to calendar if date was provided
-        if (year && month && day) {
+        // Redirect back to the exercise list if type and date are provided
+        if (type && year && month && day) {
+            res.redirect(
+                `/exercise/${type}?year=${year}&month=${month}&day=${day}`,
+            );
+        } else if (year && month && day) {
             res.redirect(`/calendar?year=${year}&month=${month}&day=${day}`);
         } else {
             const redirectPath =
@@ -199,6 +214,7 @@ const postInsertData = async (req, res) => {
             );
     }
 };
+
 const getRunPage = async (req, res) => {
     const { year, month, day } = req.query;
     res.render("insertRun", {

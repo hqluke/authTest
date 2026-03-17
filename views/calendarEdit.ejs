@@ -71,24 +71,46 @@
             const year = <%= year %>;
             const month = <%= month %>;
             const day = <%= day %>;
+            const exerciseId = <%= exerciseData[0].exercise_id %>;
             
             document.addEventListener('DOMContentLoaded', function() {
                 // Delete individual set with mobile support
                 document.querySelectorAll('.delete-btn').forEach(button => {
-                    // Click event for desktop
-                    button.addEventListener('click', function(e) {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        const id = this.getAttribute('data-set-id');
-                        deleteSet(id);
+                    let touchStartY = 0;
+                    let touchStartTime = 0;
+                    
+                    // Track touch start position and time
+                    button.addEventListener('touchstart', function(e) {
+                        touchStartY = e.touches[0].clientY;
+                        touchStartTime = Date.now();
                     });
                     
-                    // Touch event for mobile
+                    // Only trigger delete if it's a tap, not a scroll
                     button.addEventListener('touchend', function(e) {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        const id = this.getAttribute('data-set-id');
-                        deleteSet(id);
+                        const touchEndY = e.changedTouches[0].clientY;
+                        const touchDuration = Date.now() - touchStartTime;
+                        const touchDistance = Math.abs(touchEndY - touchStartY);
+                        
+                        // Only delete if:
+                        // 1. Touch was short (< 500ms)
+                        // 2. Finger didn't move much (< 10px)
+                        if (touchDuration < 500 && touchDistance < 10) {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            const id = this.getAttribute('data-set-id');
+                            deleteSet(id);
+                        }
+                    });
+                    
+                    // Click event for desktop (keep this for non-touch devices)
+                    button.addEventListener('click', function(e) {
+                        // Only handle click if it's not a touch device
+                        if (!('ontouchstart' in window)) {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            const id = this.getAttribute('data-set-id');
+                            deleteSet(id);
+                        }
                     });
                 });
                 
@@ -110,6 +132,11 @@
                     idInput.name = 'id';
                     idInput.value = id;
                     
+                    const exerciseIdInput = document.createElement('input');
+                    exerciseIdInput.type = 'hidden';
+                    exerciseIdInput.name = 'exerciseId';
+                    exerciseIdInput.value = exerciseId;
+                    
                     const yearInput = document.createElement('input');
                     yearInput.type = 'hidden';
                     yearInput.name = 'year';
@@ -126,6 +153,7 @@
                     dayInput.value = day;
                     
                     form.appendChild(idInput);
+                    form.appendChild(exerciseIdInput);
                     form.appendChild(yearInput);
                     form.appendChild(monthInput);
                     form.appendChild(dayInput);
@@ -143,7 +171,6 @@
                     const id = btn.getAttribute('data-set-id');
                     setIds.push(id);
                 });
-                
                 
                 const numSets = setIds.length;
                 if (confirm(`Are you sure you want to delete all ${numSets} sets? This cannot be undone!`)) {

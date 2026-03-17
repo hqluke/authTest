@@ -108,9 +108,18 @@ const postEditExercise = async (req, res, next) => {
 
 const deleteExercise = async (req, res, next) => {
     try {
-        const { id, year, month, day } = req.body;
+        const { id, year, month, day, exerciseId } = req.body;
         await db.deleteExerciseData(parseInt(id));
-        res.redirect(`/calendar?year=${year}&month=${month}&day=${day}`);
+
+        // If exerciseId is provided, redirect back to edit page
+        // Otherwise redirect to calendar day
+        if (exerciseId) {
+            res.redirect(
+                `/calendar/edit?year=${year}&month=${month}&day=${day}&exerciseId=${exerciseId}`,
+            );
+        } else {
+            res.redirect(`/calendar?year=${year}&month=${month}&day=${day}`);
+        }
     } catch (error) {
         next(error);
     }
@@ -200,29 +209,27 @@ const deleteRunPost = async (req, res, next) => {
 
 const deleteAllSets = async (req, res, next) => {
     try {
-        const ids = req.body['ids[]'];
+        const ids = req.body["ids[]"];
         const { year, month, day } = req.body;
-        
+
         if (!ids || ids.length === 0) {
-            console.error('No IDs received. req.body:', req.body);
+            console.error("No IDs received. req.body:", req.body);
             return res.status(400).send(`No sets to delete`);
         }
-        
-        console.log('Deleting IDs:', ids);
-        
+
+        console.log("Deleting IDs:", ids);
+
         // Delete all sets
         for (const id of ids) {
             await db.deleteExerciseData(parseInt(id));
         }
-        
+
         res.redirect(`/calendar?year=${year}&month=${month}&day=${day}`);
     } catch (error) {
-        console.error('Error deleting all sets:', error);
+        console.error("Error deleting all sets:", error);
         next(error);
     }
 };
-
-
 
 module.exports = {
     getCalendar,

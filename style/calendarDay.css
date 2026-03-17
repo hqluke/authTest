@@ -16,6 +16,13 @@ html {
     align-items: center;
     margin-bottom: 20px;
 }
+
+.div-back-links{
+ display: flex;
+    gap: 1rem;
+    flex-direction: column;
+}
+
 .back-link {
     display: inline-block;
     color: #4caf50;

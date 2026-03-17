@@ -10,19 +10,46 @@
             <div class="header">
                 <h1><%= exercise.name %></h1>
                 <% if (year && month && day) { %>
-                    <p class="date-info"><%= month %>/<%= day %>/<%= year %></p>
+                <p class="date-info"><%= month %>/<%= day %>/<%= year %></p>
                 <% } %>
             </div>
-            
+
+            <!-- Workout History Section -->
+            <% if (workoutHistory && workoutHistory.length > 0) { %>
+            <div class="history-section">
+                <h3>Recent Workouts</h3>
+                <div class="history-cards">
+                    <% workoutHistory.forEach(workout => { %>
+                    <div class="history-card">
+                        <div class="history-date">
+                            <%= new Date(workout.date).toLocaleDateString('en-US', {
+                            month: 'short', day: 'numeric', year: 'numeric' })
+                            %>
+                        </div>
+                        <div class="history-sets">
+                            <% workout.sets.forEach((set, index) => { %>
+                            <div class="history-set">
+                                <span class="set-number">Set <%= index + 1 %>:</span>
+                                <span class="set-data"><%= set.weight %> lbs × <%= set.reps %></span>
+                            </div>
+                            <% }) %>
+                        </div>
+                    </div>
+                    <% }) %>
+                </div>
+            </div>
+            <% } %>
+
             <form action="/exercise/insertData" method="POST">
                 <input type="hidden" name="exerciseId" value="<%= exercise.id %>" />
                 <input type="hidden" name="isUpperBody" value="<%= exercise.isupperbody %>" />
+                <input type="hidden" name="type" value="<%= type || (exercise.isupperbody ? 'upper' : 'lower') %>" />
                 <% if (year && month && day) { %>
-                    <input type="hidden" name="year" value="<%= year %>" />
-                    <input type="hidden" name="month" value="<%= month %>" />
-                    <input type="hidden" name="day" value="<%= day %>" />
+                <input type="hidden" name="year" value="<%= year %>" />
+                <input type="hidden" name="month" value="<%= month %>" />
+                <input type="hidden" name="day" value="<%= day %>" />
                 <% } %>
-                
+
                 <div class="form-card">
                     <div class="isets">
                         <label for="select-sets">Sets</label>
@@ -32,7 +59,7 @@
                             <%})%>
                         </select>
                     </div>
-                    
+
                     <div class="iweightsandreps">
                         <div class="iweight">
                             <label for="select-weight">Weight</label>
@@ -54,17 +81,18 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="button-container">
-                    <% if (year && month && day) { %>
-                        <a href="/exercise?year=<%= year %>&month=<%= month %>&day=<%= day %>" style="width: 100%; text-decoration: none;">
-                            <button type="button" class="btn-back">← Back</button>
-                        </a>
-                    <% } else { %>
-                        <a href="javascript:history.back()" style="width: 100%; text-decoration: none;">
-                            <button type="button" class="btn-back">← Back</button>
-                        </a>
-                    <% } %>
+                    <% 
+                    const backUrl = type 
+                        ? `/exercise/${type}?year=${year}&month=${month}&day=${day}`
+                        : (year && month && day 
+                            ? `/exercise?year=${year}&month=${month}&day=${day}` 
+                            : 'javascript:history.back()');
+                    %>
+                    <a href="<%= backUrl %>" style="width: 100%; text-decoration: none">
+                        <button type="button" class="btn-back">← Back</button>
+                    </a>
                     <button type="submit" class="btn-submit">Save Workout</button>
                 </div>
             </form>

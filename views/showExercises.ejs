@@ -1,10 +1,10 @@
 <html lang="en">
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><%= exerciseType %> Exercises</title>
-    <link rel="stylesheet" href="/showExercises.css" />
-</head>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title><%= exerciseType %> Exercises</title>
+        <link rel="stylesheet" href="/showExercises.css" />
+    </head>
 
     <body>
         <div class="container">
@@ -16,7 +16,7 @@
             <div class="exercise-grid">
                 <% exercises.forEach(exercise => { %>
                 <a
-                    href="/exercise/insertData?exerciseId=<%= exercise.id %><%= year && month && day ? `&year=${year}&month=${month}&day=${day}` : '' %>"
+                    href="/exercise/insertData?exerciseId=<%= exercise.id %>&year=<%= year %>&month=<%= month %>&day=<%= day %>&type=<%= exerciseType === 'Upper Body' ? 'upper' : 'lower' %>"
                 >
                     <button class="exercise-card">
                         <span class="exercise-name"><%= exercise.name %></span>
